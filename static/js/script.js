@@ -145,32 +145,23 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 // Load GeoJSON and add to map
-fetch('data/boroughs.geojson')
+fetch('data/census-estimates.geojson')
   .then(response => response.json())
   .then(geojsonData => {
-    // Filter to include only the feature with fips_code '02090'
-    const filteredData = {
-      ...geojsonData,
-      features: geojsonData.features.filter(
-        feature => feature.properties.fips_code === '02090'
-      )
-    };
-
-    // Create the layer separately so we can access its bounds
-    const layer = L.geoJSON(filteredData, {
+    const layer = L.geoJSON(geojsonData, {
       onEachFeature: function (feature, layer) {
-        if (feature.properties && feature.properties.name) {
-          layer.bindPopup(feature.properties.name);
+        if (feature.properties && feature.properties.Description) {
+          layer.bindPopup(feature.properties.Description);
         }
       }
     }).addTo(map);
 
-    // Zoom to the bounds of the feature
     map.fitBounds(layer.getBounds());
   })
   .catch(error => {
     console.error("Failed to load GeoJSON:", error);
   });
+
 
 // Run setup on page load
 initializeInputs();
