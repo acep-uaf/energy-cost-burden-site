@@ -149,10 +149,20 @@ fetch('data/census-estimates.geojson')
   .then(response => response.json())
   .then(geojsonData => {
     const layer = L.geoJSON(geojsonData, {
+      style: function(feature) {
+        const value = feature.properties.EnergyBurden;
+        return {
+          fillColor: getColor(value),
+          weight: 1,
+          opacity: 1,
+          color: 'white',
+          fillOpacity: 0.7
+        };
+      },
       onEachFeature: function (feature, layer) {
-        if (feature.properties && feature.properties.Description) {
-          layer.bindPopup(feature.properties.Description);
-        }
+        const desc = feature.properties.Description || "Unknown";
+        const burden = (feature.properties.EnergyBurden * 100)?.toFixed(2) || "N/A";
+        layer.bindPopup(`<strong>${desc}</strong><br>Energy Burden: ${burden}%`);
       }
     }).addTo(map);
 
@@ -161,6 +171,43 @@ fetch('data/census-estimates.geojson')
   .catch(error => {
     console.error("Failed to load GeoJSON:", error);
   });
+
+function getColor(d) {
+  return d > 0.15 ? '#800026' :
+         d > 0.12 ? '#BD0026' :
+         d > 0.10 ? '#E31A1C' :
+         d > 0.08  ? '#FC4E2A' :
+         d > 0.06  ? '#FD8D3C' :
+         d > 0.04  ? '#FEB24C' :
+         d > 0.02  ? '#FED976' :
+                  '#FFEDA0';
+}
+
+
+const legend = L.control({ position: 'bottomright' });
+
+legend.onAdd = function (map) {
+  const div = L.DomUtil.create('div', 'info legend');
+  const grades = [0.00, 0.02, 0.04, 0.06, 0.08, 0.10, 0.12, 0.15];
+
+  div.innerHTML += '<h4>Estimated Energy Burden</h4>';
+
+  for (let i = 0; i < grades.length; i++) {
+    const from = grades[i];
+    const to = grades[i + 1];
+
+    div.innerHTML +=
+      `<div><span class="legend-color" style="background:${getColor(from + 0.0001)}"></span> ` +
+      `${(from * 100).toFixed(0)}%${to ? `–${(to * 100).toFixed(0)}%` : '+%'}</div>`;
+  }
+
+  return div;
+};
+
+legend.addTo(map);
+
+
+
 
 
 // Run setup on page load
