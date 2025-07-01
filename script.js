@@ -1,18 +1,29 @@
-const NUM_SLIDERS = 7;
-const slidersContainer = document.getElementById('sliders');
-const outputDiv = document.getElementById('output');
-let prices = new Array(NUM_SLIDERS).fill(1.0);
-let csvData = [];
+const sliderConfig = [
+    { label: 'Price of Heating Oil (per gallon)', min: 0, max: 10, step: 0.01, default: 3.21 },
+    { label: 'Price of Cordwood (cord)',        min: 0, max: 600, step: 1,   default: 450 },
+    { label: 'Price of Electricity (cents/kWh)',      min: 0, max: 100,  step: 1, default: 20 }
+  ];
 
-// Create sliders
-for (let i = 0; i < NUM_SLIDERS; i++) {
-  const wrapper = document.createElement('div');
-  wrapper.innerHTML = `
-    <label>Price ${i + 1}: <span id="val-${i}">${prices[i]}</span></label>
-    <input type="range" min="0" max="10" step="0.1" value="${prices[i]}" data-index="${i}" />
-  `;
-  slidersContainer.appendChild(wrapper);
-}
+
+  const slidersContainer = document.getElementById('sliders');
+  const outputDiv = document.getElementById('output');
+  let prices = sliderConfig.map(cfg => cfg.default);
+  let csvData = [];
+  
+  sliderConfig.forEach((cfg, i) => {
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = `
+      <label>${cfg.label}: <span id="val-${i}">${cfg.default}</span></label>
+      <input 
+        type="range" 
+        min="${cfg.min}" 
+        max="${cfg.max}" 
+        step="${cfg.step}" 
+        value="${cfg.default}" 
+        data-index="${i}" />
+    `;
+    slidersContainer.appendChild(wrapper);
+  });
 
 // Event listeners
 document.querySelectorAll('input[type="range"]').forEach(slider => {
