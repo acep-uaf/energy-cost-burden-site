@@ -48,4 +48,27 @@ body {
     gap: 1em;
     align-items: center;
   }
-  
+
+.leaflet-control .legend {
+  background: white;
+  padding: 10px;
+  font-size: 0.9em;
+  line-height: 1.6em;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+.leaflet-control .legend h4 {
+  margin: 0 0 0.5em;
+  font-size: 1em;
+}
+
+.legend-color {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  vertical-align: middle;
+  border: 1px solid #999;
+}
+
