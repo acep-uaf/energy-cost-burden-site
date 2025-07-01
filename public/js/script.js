@@ -36,7 +36,7 @@ document.querySelectorAll('input[type="range"]').forEach(slider => {
 });
 
 // Load CSV
-fetch('data/data.csv')
+fetch('data/census_info.csv')
   .then(response => response.text())
   .then(text => {
     csvData = text.trim().split('\n').map(row => row.split(',').map(Number));
