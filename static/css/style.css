@@ -6,11 +6,13 @@ body {
   }
   
   #sidebar {
-    width: 300px;
+    width: 30%;
     padding: 1em;
     background:rgb(255, 255, 255);
+    box-sizing: border-box;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     overflow-y: auto;
+    border-right: 1px solid #ccc;
   }
   
   #map {
@@ -18,6 +20,32 @@ body {
   }
   
   input[type="range"] {
-    width: 100%;
+    width: 80%;
+  }
+
+  input[type=number] {
+    width: 20%;
+  }
+
+  .input-group {
+    margin-bottom: 1.5em;
+  }
+
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.3em;
+  }
+  
+  .subtitle {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 0.3em;
+  }
+
+  .controls {
+    display: flex;
+    gap: 1em;
+    align-items: center;
   }
   
