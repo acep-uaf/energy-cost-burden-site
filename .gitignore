@@ -1,3 +1,11 @@
-.DS_Store
 
+# Ignore Hugo build, public/
+public/
+
+
+# Binaries
 *.shp
+
+
+# Mac files
+.DS_Store
