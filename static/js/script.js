@@ -116,27 +116,6 @@ document.getElementById("reset-button").addEventListener("click", () => {
   displayInitialResult();
 });
 
-// Load CSV
-fetch('data/census_info.csv')
-  .then(response => response.text())
-  .then(text => {
-    csvData = text.trim().split('\n').map(row => row.split(',').map(Number));
-    updateOutput();
-  });
-
-// Dummy calculation
-function updateOutput() {
-  if (!csvData.length) return;
-
-  let total = 0;
-  for (let row of csvData) {
-    for (let i = 0; i < row.length; i++) {
-      total += row[i] * (prices[i] || 1);
-    }
-  }
-
-  outputDiv.textContent = `Calculated total: ${total.toFixed(2)}`;
-}
 
 // Initialize Leaflet map
 const map = L.map('map').setView([0, 0], 2);
