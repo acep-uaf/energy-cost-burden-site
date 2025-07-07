@@ -85,10 +85,18 @@
       </div>
 
       <h2>Result</h2>
-      <p>Weighted Average Space Heating Cost: <span id="result">$–</span> per MMBtu (useful)</p>
-      <p>Average Electricity Cost: <span id="electricity_result">$–</span> per MMBtu</p>
+      <div class="result-row">
+        <div class="label">Weighted Average Space Heating Cost</div>
+        <div class="label">Average Electricity Cost</div>
+      </div>
+      <div class="result-row large-numbers">
+        <div><span id="result"></span><span class="unit">/MMBtu</span></div>
+        <div><span id="electricity_result"></span><span class="unit">/MMBtu</span></div>
+      </div>
 
-      <div class="controls" style="margin-bottom: 1em;">
+
+
+      <div class="controls" style="margin-bottom: 1em; margin-top: 1em;">
         <button type="button" id="reset-button">Reset</button>
         <button type="update">Update Map</button>
       </div>

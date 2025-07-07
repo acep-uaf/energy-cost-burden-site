@@ -191,3 +191,29 @@ label {
   border: 1px solid #999;
 }
 
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.result-row > div {
+  flex: 1;
+  text-align: center;
+}
+
+.large-numbers {
+  margin-top: 0.5rem;
+}
+
+.large-numbers span:first-child {
+  font-size: 2.2rem;
+  font-weight: bold;
+}
+
+.unit {
+  font-size: 1rem;
+  margin-left: 0.25rem;
+}
+
+
