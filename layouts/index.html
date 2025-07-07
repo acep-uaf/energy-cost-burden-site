@@ -84,16 +84,23 @@
         </div>
       </div>
 
-      <div class="controls">
+      <h2>Result</h2>
+      <p>Weighted Average Space Heating Cost: <span id="result">$–</span> per MMBtu (useful)</p>
+      <p>Average Electricity Cost: <span id="electricity_result">$–</span> per MMBtu</p>
+
+      <div class="controls" style="margin-bottom: 1em;">
         <button type="button" id="reset-button">Reset</button>
         <button type="update">Update Map</button>
       </div>
 
+      <div class="controls" style="margin-bottom: 1em;">
+        <button type="download" id="download-csv">Download CSV</button>
+        <button type="download" id="download-geojson">Download GeoJson</button>
+      </div>
+
     </form>
 
-    <h2>Result</h2>
-    <p>Weighted Average Space Heating Cost: <span id="result">$–</span> per MMBtu (useful)</p>
-    <p>Average Electricity Cost: <span id="electricity_result">$–</span> per MMBtu</p>
+    
     <hr>
     <h2>Links</h2>
     <ul>
