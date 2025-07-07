@@ -14,12 +14,12 @@
     <h2>About</h2>
     <p>This tool estimates the average annual household energy costs as a share of total household income in the Fairbanks North Star Borough (FNSB) based on energy prices and census data.</p>
     <h2>Instructions</h2>
-    <p>Use the sliders or input boxes to adjust the prices of various heating fuels. The form will calculate the weighted average space heating and electricity costs based on the inputs provided. The results will be displayed below the form.</p>
+    <p>Use the sliders or input boxes to adjust the prices of various heating fuels. The default prices are from the original study conducted in 2024 (see methodology below). The form will calculate the weighted average space heating and electricity costs based on the inputs provided. The results will be displayed below the form.</p>
     <p>The calculations will then update the <strong>estimated energy burden</strong> in each census tract and then display it on the map.</p>
     <hr>
     <form id="price-form">
       <div class="input-group">
-        <label for="hfo_price">Heating Fuel Oil Price ($/gal)</label>
+        <label for="hfo_price">Heating Fuel Oil Price ($/gallon)</label>
         <div class="subtitle">Efficiency: 85% | Market Share: 73%</div>
         <div class="controls">
           <input type="range" id="hfo_price" min="0" max="10" step="0.01">
@@ -46,7 +46,7 @@
       </div>
 
       <div class="input-group">
-        <label for="natural_gas_price">Natural Gas Price ($/ccf)</label>
+        <label for="natural_gas_price">Natural Gas Price ($/CCF)</label>
         <div class="subtitle">Efficiency: 85% | Market Share: 0.6%</div>
         <div class="controls">
           <input type="range" id="natural_gas_price" min="0" max="5" step="0.01">
@@ -64,7 +64,7 @@
       </div>
 
       <div class="input-group">
-        <label for="district_heat_price">District Heat Price ($/MMBtu)</label>
+        <label for="district_heat_price">District Heat Price ($/1,000 lbs)</label>
         <div class="subtitle">Efficiency: 100% | Market Share: 1.6%</div>
         <div class="controls">
           <input type="range" id="district_heat_price" min="0" max="50" step="0.01">
