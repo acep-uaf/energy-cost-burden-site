@@ -9,7 +9,10 @@
 </head>
 <body>
   <div id="sidebar">
-    <h1>FNSB Energy Burden Estimator</h1>
+    <div class="header-with-logo">
+      <img src="images/acep-logo.png" alt="ACEP Logo">
+        <h1>FNSB Energy Burden Estimator</h1>
+    </div>
     <hr>
     <h2>About</h2>
     <p>This tool estimates the average annual household energy costs as a share of total household income in the Fairbanks North Star Borough (FNSB) based on energy prices and census data.</p>
@@ -81,23 +84,27 @@
         </div>
       </div>
 
-      <button type="button" id="reset-button">Reset to Defaults</button>
-      <button type="submit">Calculate</button>
+      <div class="controls">
+        <button type="reset" id="reset-button">Reset</button>
+        <button type="update">Update Map</button>
+      </div>
+
     </form>
 
     <h2>Result</h2>
     <p>Weighted Average Space Heating Cost: <span id="result">$–</span> per MMBtu (useful)</p>
     <p>Average Electricity Cost: <span id="electricity_result">$–</span> per MMBtu</p>
     <hr>
-    <h3>Additional Resources</h3>
-    <h4>Methodology</h4>
-    <p>The methodology used to estimate the required heating and electricity loads of single and multifamily buildings in the borough can be seen in the following UAF ACEP Report: <a href="https://doi.org/10.5281/zenodo.12575186" target="_blank">Kaczmarski, J., Pride, D., &amp; Trochim, E. (2024). Spatial Energy Burden Analysis of the Fairbanks North Star Borough (1.0.0). Zenodo.</a></p>
-    <h4>Feedback</h4>
-    <p>We welcome your feedback! If there are any issues with the calculator or you have suggestions, please <a href="https://github.com/acep-uaf/energy-cost-burden-site/issues/new" target="_blank">submit an issue on GitHub</a>.</p>
+    <h2>Links</h2>
+    <ul>
+      <li><a href="https://github.com/acep-uaf/energy-cost-burden-site/wiki">Documentation and Methodology</a></li>
+      <li><a href="https://github.com/acep-uaf/energy-cost-burden-site/issues/new?template=feature_request.md">Submit a Feature Request</a></li>
+      <li><a href="https://github.com/acep-uaf/energy-cost-burden-site/issues/new?template=bug_report.md">Report a Bug</a></li>
+    </ul>
     <hr>
-    <h3>Funding</h3>
+    <h2>Funding</h2>
     <p>Funding for this project was provided by the U.S. Department of Defense Office of Local Defense Community Cooperation Award No. GR1538-25-04.</p>
-    <h3>Notice of Nondiscrimination</h3>
+    <h2>Notice of Nondiscrimination</h2>
     <p>The University of Alaska is an equal opportunity/equal access employer and educational institution. The university is committed to a policy of nondiscrimination against individuals on the basis of any legally protected status.</p>
   </div>
   <div id="map"></div>

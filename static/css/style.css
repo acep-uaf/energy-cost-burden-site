@@ -1,53 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&display=swap');
+
 body {
-    margin: 0;
-    font-family: sans-serif;
-    display: flex;
-    height: 100vh;
-  }
-  
-  #sidebar {
-    width: 30%;
-    padding: 1em;
-    background:rgb(255, 255, 255);
-    box-sizing: border-box;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    overflow-y: auto;
-    border-right: 1px solid #ccc;
-  }
-  
-  #map {
-    flex-grow: 1;
-  }
-  
-  input[type="range"] {
-    width: 80%;
+  margin: 0;
+  font-family: 'Barlow', sans-serif;
+  display: flex;
+  height: 100vh;
+  text-align: left;
+  font-weight: 400;
+  font-style: normal;
+}
+
+a:link {
+    color: #236192;
   }
 
-  input[type=number] {
-    width: 20%;
-  }
+a:visited {
+  color: #F45197;
+}
 
-  .input-group {
-    margin-bottom: 1.5em;
-  }
+a:hover {
+  color: #DF6A2E;
+}
 
-  label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 0.3em;
-  }
+a:active {
+  color: #FFCD00;
+}
+
+.header-with-logo {
+  display: flex;
+  align-items: center;
+}
+
+.header-with-logo img {
+  height: 50px;
+  margin-right: 10px;
+}
   
-  .subtitle {
-    font-size: 0.9em;
-    color: #555;
-    margin-bottom: 0.3em;
-  }
+#sidebar {
+  width: 30%;
+  padding: 1em;
+  background:rgb(255, 255, 255);
+  box-sizing: border-box;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  overflow-y: auto;
+  border-right: 1px solid #ccc;
+}
 
-  .controls {
-    display: flex;
-    gap: 1em;
-    align-items: center;
-  }
+#map {
+  flex-grow: 1;
+}
+
+input[type="range"] {
+  width: 80%;
+  background-color: #236192;
+}
+
+input[type=number] {
+  width: 20%;
+}
+
+button[type="reset"] {
+  align-items: center;
+  background-color: #DF6A2E;
+  border: 0;
+  border-radius: 100px;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: 'Barlow', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 20px;
+  max-width: 480px;
+  min-height: 40px;
+  min-width: 0px;
+  overflow: hidden;
+  padding: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  touch-action: manipulation;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+  width: 25%;
+}
+
+button[type="update"] {
+  align-items: center;
+  background-color: #236192;
+  border: 0;
+  border-radius: 100px;
+  box-sizing: border-box;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: 'Barlow', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 20px;
+  max-width: 480px;
+  min-height: 40px;
+  min-width: 0px;
+  overflow: hidden;
+  padding: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  touch-action: manipulation;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+  width: 75%;
+}
+
+.input-group {
+  margin-bottom: 1.5em;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.3em;
+}
+
+.subtitle {
+  font-size: 0.9em;
+  color: #555;
+  margin-bottom: 0.3em;
+}
+
+.controls {
+  display: flex;
+  gap: 1em;
+  align-items: center;
+}
 
 .leaflet-control .legend {
   background: white;
