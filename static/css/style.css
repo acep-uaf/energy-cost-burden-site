@@ -59,7 +59,7 @@ input[type=number] {
   width: 20%;
 }
 
-button[type="reset"] {
+button {
   align-items: center;
   background-color: #DF6A2E;
   border: 0;
