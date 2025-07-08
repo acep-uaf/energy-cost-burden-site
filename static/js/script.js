@@ -123,6 +123,19 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
+// Initialize Overlays and Layer Control
+const overlays = {};
+const layerControl = L.control.layers(null, overlays, { collapsed: false }).addTo(map);
+
+// Defining fill colors
+const nameColors = {
+  "City of Fairbanks": "#1f78b4",
+  "City of North Pole": "#33a02c",
+  "Fort Wainwright Army Post": "#e31a1c",
+  "Eielson Air Force Base": "#ff7f00"
+};
+
+
 // Load GeoJSON and add to map
 fetch('data/census-estimates.geojson')
   .then(response => response.json())
@@ -151,6 +164,53 @@ fetch('data/census-estimates.geojson')
     console.error("Failed to load GeoJSON:", error);
   });
 
+// Load and add Cities layer
+fetch('data/cities.geojson')
+  .then(response => response.json())
+  .then(data => {
+    const citiesLayer = L.geoJSON(data, {
+      style: feature => ({
+        color: "#333",
+        weight: 1.5,
+        dashArray: "4",
+        fillColor: nameColors[feature.properties.NAME] || "#cccccc",
+        fillOpacity: 0.5
+      }),
+      onEachFeature: (feature, layer) => {
+        if (feature.properties && feature.properties.NAME) {
+          layer.bindPopup(`<strong>${feature.properties.NAME}</strong>`);
+        }
+      }
+    });
+    citiesLayer.addTo(map);
+    overlays["Cities"] = citiesLayer;
+    layerControl.addOverlay(citiesLayer, "Cities");
+  });
+
+// Load and add Military Boundaries layer
+fetch('data/military-boundaries.geojson')
+  .then(response => response.json())
+  .then(data => {
+    const militaryLayer = L.geoJSON(data, {
+      style: feature => ({
+        color: "#333",
+        weight: 1.5,
+        dashArray: "4",
+        fillColor: nameColors[feature.properties.NAME] || "#cccccc",
+        fillOpacity: 0.5
+      }),
+      onEachFeature: (feature, layer) => {
+        if (feature.properties && feature.properties.NAME) {
+          layer.bindPopup(`<strong>${feature.properties.NAME}</strong>`);
+        }
+      }
+    });
+    militaryLayer.addTo(map);
+    overlays["Military Boundaries"] = militaryLayer;
+    layerControl.addOverlay(militaryLayer, "Military Boundaries");
+  });
+
+// Functions for creating the legend for the energy cost burden layer
 function getColor(d) {
   return d > 0.15 ? '#800026' :
          d > 0.12 ? '#BD0026' :
@@ -161,7 +221,6 @@ function getColor(d) {
          d > 0.02  ? '#FED976' :
                   '#FFEDA0';
 }
-
 
 const legend = L.control({ position: 'bottomright' });
 
@@ -184,9 +243,6 @@ legend.onAdd = function (map) {
 };
 
 legend.addTo(map);
-
-
-
 
 
 // Run setup on page load
