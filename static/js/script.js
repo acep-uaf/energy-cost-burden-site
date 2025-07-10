@@ -182,7 +182,7 @@ fetch('data/cities.geojson')
         }
       }
     });
-    citiesLayer.addTo(map);
+    // citiesLayer.addTo(map); // uncomment to display layer by default
     overlays["Cities"] = citiesLayer;
     layerControl.addOverlay(citiesLayer, "Cities");
   });
@@ -205,7 +205,7 @@ fetch('data/military-boundaries.geojson')
         }
       }
     });
-    militaryLayer.addTo(map);
+    // militaryLayer.addTo(map); // uncomment to display layer by default
     overlays["Military Boundaries"] = militaryLayer;
     layerControl.addOverlay(militaryLayer, "Military Boundaries");
   });
