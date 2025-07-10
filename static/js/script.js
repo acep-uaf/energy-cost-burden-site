@@ -208,6 +208,21 @@ fetch('data/military-boundaries.geojson')
     // militaryLayer.addTo(map); // uncomment to display layer by default
     overlays["Military Boundaries"] = militaryLayer;
     layerControl.addOverlay(militaryLayer, "Military Boundaries");
+    
+    // Add "Additional Layers" title above the overlays list
+    setTimeout(() => {
+      const overlaysList = document.querySelector('.leaflet-control-layers-overlays');
+      if (overlaysList) {
+        const title = document.createElement('div');
+        title.textContent = 'Additional Layers';
+        title.style.fontWeight = 'bold';
+        title.style.fontSize = '16px';
+        title.style.padding = '4px 8px';
+        title.style.background = '#fff';
+        title.style.borderBottom = '1px solid #ccc';
+        overlaysList.parentNode.insertBefore(title, overlaysList);
+      }
+    }, 0);
   });
 
 // Functions for creating the legend for the energy cost burden layer
