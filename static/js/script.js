@@ -236,7 +236,7 @@ legend.onAdd = function (map) {
 
     div.innerHTML +=
       `<div><span class="legend-color" style="background:${getColor(from + 0.0001)}"></span> ` +
-      `${(from * 100).toFixed(0)}%${to ? `–${(to * 100).toFixed(0)}%` : ''}</div>`;
+      `${(from * 100).toFixed(0)}%${to ? `–${(to * 100).toFixed(0)}%` : '+'}</div>`;
   }
 
   return div;
