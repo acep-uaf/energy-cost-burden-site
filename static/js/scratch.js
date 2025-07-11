@@ -1,55 +1,54 @@
-// Load and parse CSV using PapaParse
 document.addEventListener("DOMContentLoaded", () => {
-    const csvUrl = "/data/census-tract-input-vector.csv"; // relative to Hugo's "static" dir
+    const csvUrl = "/data/census-tract-input-vector-minus-1.csv"; 
   
     fetch(csvUrl)
-      .then(response => response.text())
-      .then(csvText => {
-        const parsed = Papa.parse(csvText, {
-          header: true,
-          skipEmptyLines: true
-        });
+        .then(response => response.text())
+        .then(csvText => {
+            const parsed = Papa.parse(csvText, {
+                header: true,
+                skipEmptyLines: true
+            });
   
-        const results = parsed.data;
-        calculateAnnualEnergyUse_cost_hh(results);
-        calculateEnergyBurden(results);
-      })
-      .catch(error => console.error("Error loading CSV:", error));
-  });
-
-
-
-  function calculateAnnualEnergyUse_cost_hh(data) {
-    data.forEach(entry => {
-      const AnnualEnergyUse_cost = parseFloat(entry.AnnualEnergyUse_cost)
-      const OccupiedUnits = parseFloat(entry.OccupiedUnits)
-
-      if (!isNaN(AnnualEnergyUse_cost) && !isNaN(OccupiedUnits) && OccupiedUnits > 0) {
-        const AnnualEnergyUse_cost_hh = (AnnualEnergyUse_cost / OccupiedUnits);
-
-        entry.AnnualEnergyUse_cost_hh = AnnualEnergyUse_cost_hh;
-
-        console.log(`${entry.Description} has a ${AnnualEnergyUse_cost_hh.toFixed(2)} annual energy use cost per household`);
-      } else {
-        console.warn("Invalid data for tract:", entry);
-      }
-    })
-  }
-
-
-
-
-// energyBurden = AnnualEnergyUse_cost_hh / MedianHouseholdIncome
-  function calculateEnergyBurden(data) {
-    data.forEach(entry => {
-      const MedianHouseholdIncome = parseFloat(entry.MedianHouseholdIncome);
-      const AnnualEnergyUse_cost_hh = parseFloat(entry.AnnualEnergyUse_cost_hh);
-  
-      if (!isNaN(MedianHouseholdIncome) && !isNaN(AnnualEnergyUse_cost_hh) && MedianHouseholdIncome > 0) {
-        const energyBurden = (AnnualEnergyUse_cost_hh / MedianHouseholdIncome) * 100;
-        console.log(`${entry.Description} has a ${energyBurden.toFixed(2)}% energy burden`);
-      } else {
-        console.warn("Invalid data for tract:", entry);
-      }
+            const results = parsed.data;
+            const enrichedData = calculateHouseholdLevelMetrics(results);
+            calculateEnergyBurden(enrichedData);
+        })
+        .catch(error => console.error("Error loading CSV:", error));
     });
-  }
+
+// Lots of division in this script, streamline and safeguard
+    function safeDivide(numerator, denominator) {
+        const num = parseFloat(numerator);
+        const denom = parseFloat(denominator);
+        return (!isNaN(num) && !isNaN(denom) && denom > 0) ? num / denom : null;
+    }
+
+
+// Calculate household metrics by dividing by occupied units for each tract
+    function calculateHouseholdLevelMetrics(data) {
+        return data.map(entry => {
+            entry.AnnualSpaceHeating_mmbtu_hh   = safeDivide(entry.AnnualSpaceHeating_mmbtu, entry.OccupiedUnits);
+            entry.AnnualElectricity_mmbtu_hh    = safeDivide(entry.AnnualElectricity_mmbtu, entry.OccupiedUnits);
+            entry.AnnualEnergyUse_mmbtu_hh      = safeDivide(entry.AnnualEnergyUse_mmbtu, entry.OccupiedUnits);
+
+            entry.AnnualSpaceHeating_cost_hh    = safeDivide(entry.AnnualSpaceHeating_cost, entry.OccupiedUnits);
+            entry.AnnualElectricity_cost_hh     = safeDivide(entry.AnnualElectricity_cost, entry.OccupiedUnits);
+            entry.AnnualEnergyUse_cost_hh       = safeDivide(entry.AnnualEnergyUse_cost, entry.OccupiedUnits);
+
+            return entry;
+        });
+    }
+
+
+// Calculate energy burden and print to console
+    function calculateEnergyBurden(data) {
+        data.forEach(entry => {
+            entry.energyBurden = safeDivide(entry.AnnualEnergyUse_cost_hh, entry.MedianHouseholdIncome) * 100;
+      
+            if (entry.energyBurden != null) {
+                console.log(`${entry.Description} has a ${entry.energyBurden.toFixed(2)}% energy burden`);
+            } else {
+                console.warn(`Could not calculate energy burden for ${entry.Description}`);
+            }
+        });
+    }
