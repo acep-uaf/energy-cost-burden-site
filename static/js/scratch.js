@@ -11,15 +11,36 @@ document.addEventListener("DOMContentLoaded", () => {
         });
   
         const results = parsed.data;
-        runEnergyCalculations(results);
+        calculateAnnualEnergyUse_cost_hh(results);
+        calculateEnergyBurden(results);
       })
       .catch(error => console.error("Error loading CSV:", error));
   });
 
 
 
+  function calculateAnnualEnergyUse_cost_hh(data) {
+    data.forEach(entry => {
+      const AnnualEnergyUse_cost = parseFloat(entry.AnnualEnergyUse_cost)
+      const OccupiedUnits = parseFloat(entry.OccupiedUnits)
 
-  function runEnergyCalculations(data) {
+      if (!isNaN(AnnualEnergyUse_cost) && !isNaN(OccupiedUnits) && OccupiedUnits > 0) {
+        const AnnualEnergyUse_cost_hh = (AnnualEnergyUse_cost / OccupiedUnits);
+
+        entry.AnnualEnergyUse_cost_hh = AnnualEnergyUse_cost_hh;
+
+        console.log(`${entry.Description} has a ${AnnualEnergyUse_cost_hh.toFixed(2)} annual energy use cost per household`);
+      } else {
+        console.warn("Invalid data for tract:", entry);
+      }
+    })
+  }
+
+
+
+
+// energyBurden = AnnualEnergyUse_cost_hh / MedianHouseholdIncome
+  function calculateEnergyBurden(data) {
     data.forEach(entry => {
       const MedianHouseholdIncome = parseFloat(entry.MedianHouseholdIncome);
       const AnnualEnergyUse_cost_hh = parseFloat(entry.AnnualEnergyUse_cost_hh);
@@ -32,9 +53,3 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-
-
-
-
-
-  
