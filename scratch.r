@@ -1,4 +1,5 @@
 library(tidyverse)
+library(sf)
 
 census_tract_input_vector <- read_csv('static/data/census-tract-input-vector.csv')
 
@@ -32,3 +33,12 @@ debug <- select(census_tract_input_vector,
     EnergyBurden))
 
 write_csv(debug, 'static/data/debug.csv')
+
+
+#############
+
+geo <- st_read(dsn = 'static/data/census-estimates.geojson')
+
+geo <- select(geo, c(Tract, TractLong, Description, geometry))
+
+st_write(geo, 'static/data/census-estimates-minus-1.geojson', delete_dsn = T)
