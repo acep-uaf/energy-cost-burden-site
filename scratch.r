@@ -12,8 +12,13 @@ census_tract_input_vector_minus_2 <- select(census_tract_input_vector_minus_1, !
 write_csv(census_tract_input_vector_minus_2, 'static/data/census-tract-input-vector-minus-2.csv')
 
 
-census_tract_input_vector_minus_3 <- select(census_tract_input_vector_minus_2, !c(AnnualElectricity_cost))
+census_tract_input_vector_minus_3 <- select(census_tract_input_vector_minus_2, !ends_with(c('_cost')))
 write_csv(census_tract_input_vector_minus_3, 'static/data/census-tract-input-vector-minus-3.csv')
+
+
+census_tract_input_vector_minus_4 <- select(census_tract_input_vector_minus_3, !ends_with(c('AnnualEnergyUse_mmbtu')))
+write_csv(census_tract_input_vector_minus_4, 'static/data/census-tract-input-vector-minus-4.csv')
+
 
 
 debug <- select(census_tract_input_vector, 
