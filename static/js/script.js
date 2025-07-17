@@ -19,18 +19,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const map = L.map('map').setView([0, 0], 2);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-  // Initialize Overlays and Layer Control
-  const overlays = {};
-  const layerControl = L.control.layers(null, overlays, { collapsed: false }).addTo(map);
-
-  // Defining fill colors
-  const nameColors = {
-    "City of Fairbanks": "#1f78b4",
-    "City of North Pole": "#33a02c",
-    "Fort Wainwright Army Post": "#e31a1c",
-    "Eielson Air Force Base": "#ff7f00"
-  };
-
   // Load CSV + GeoJSON
   const [censusTractCsvText, censusTractGeoJson] = await Promise.all([
     fetch(censusTractCsvUrl).then(res => res.text()),
@@ -45,6 +33,43 @@ document.addEventListener("DOMContentLoaded", async () => {
   const geoByTractLong = {};
   censusTractGeoJson.features.forEach(f => geoByTractLong[f.properties.TractLong] = f.geometry);
   rawData.forEach(entry => entry.geometry = geoByTractLong[entry.TractLong]);
+
+
+  // === Add Legend Control ===
+  const legend = L.control({ position: 'bottomright' });
+
+  legend.onAdd = function (map) {
+    const div = L.DomUtil.create('div', 'info legend');
+    const grades = [0.00, 0.02, 0.04, 0.06, 0.08, 0.10, 0.12, 0.15];
+  
+    div.innerHTML += '<h4>Estimated Energy Burden</h4>';
+  
+    for (let i = 0; i < grades.length; i++) {
+      const from = grades[i];
+      const to = grades[i + 1];
+  
+      div.innerHTML +=
+        `<div><span class="legend-color" style="background:${getColor((from + 0.0001) * 100)}"></span> ` +
+        `${(from * 100).toFixed(0)}%${to ? `–${(to * 100).toFixed(0)}%` : '+'}</div>`;
+    }
+  
+    return div;
+  };
+
+  legend.addTo(map);
+
+
+  // Initialize Overlays and Layer Control
+  const overlays = {};
+  const layerControl = L.control.layers(null, overlays, { collapsed: false }).addTo(map);
+
+  // Defining fill colors
+  const nameColors = {
+    "City of Fairbanks": "#1f78b4",
+    "City of North Pole": "#33a02c",
+    "Fort Wainwright Army Post": "#e31a1c",
+    "Eielson Air Force Base": "#ff7f00"
+  };
 
   // Load and add Cities layer
   fetch('/data/cities.geojson')
