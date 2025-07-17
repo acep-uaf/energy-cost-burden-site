@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   // === 1. DOM & Data Setup ===
-  const csvUrl = "/data/census-tract-input-vector-minus-4.csv";
-  const geoJsonUrl = "/data/census-estimates-minus-1.geojson";
+  const censusTractCsvUrl = "/data/census-tract-input-vector-minus-4.csv";
+  const censusTractGeoJsonUrl = "/data/census-estimates-minus-1.geojson";
   let rawData = [];
   let mapLayer;
 
@@ -20,18 +20,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
   // Load CSV + GeoJSON
-  const [csvText, geoJson] = await Promise.all([
-    fetch(csvUrl).then(res => res.text()),
-    fetch(geoJsonUrl).then(res => res.json())
+  const [censusTractCsvText, censusTractGeoJson] = await Promise.all([
+    fetch(censusTractCsvUrl).then(res => res.text()),
+    fetch(censusTractGeoJsonUrl).then(res => res.json())
   ]);
 
   // Parse CSV
-  const parsed = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+  const parsed = Papa.parse(censusTractCsvText, { header: true, skipEmptyLines: true });
   rawData = parsed.data;
 
   // Map TractLong → geometry
   const geoByTractLong = {};
-  geoJson.features.forEach(f => geoByTractLong[f.properties.TractLong] = f.geometry);
+  censusTractGeoJson.features.forEach(f => geoByTractLong[f.properties.TractLong] = f.geometry);
   rawData.forEach(entry => entry.geometry = geoByTractLong[entry.TractLong]);
 
   // Setup UI
