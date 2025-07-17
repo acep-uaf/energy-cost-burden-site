@@ -19,6 +19,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   const map = L.map('map').setView([0, 0], 2);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
+  // Initialize Overlays and Layer Control
+  const overlays = {};
+  const layerControl = L.control.layers(null, overlays, { collapsed: false }).addTo(map);
+
+  // Defining fill colors
+  const nameColors = {
+    "City of Fairbanks": "#1f78b4",
+    "City of North Pole": "#33a02c",
+    "Fort Wainwright Army Post": "#e31a1c",
+    "Eielson Air Force Base": "#ff7f00"
+  };
+
   // Load CSV + GeoJSON
   const [censusTractCsvText, censusTractGeoJson] = await Promise.all([
     fetch(censusTractCsvUrl).then(res => res.text()),
@@ -33,6 +45,67 @@ document.addEventListener("DOMContentLoaded", async () => {
   const geoByTractLong = {};
   censusTractGeoJson.features.forEach(f => geoByTractLong[f.properties.TractLong] = f.geometry);
   rawData.forEach(entry => entry.geometry = geoByTractLong[entry.TractLong]);
+
+  // Load and add Cities layer
+  fetch('/data/cities.geojson')
+  .then(response => response.json())
+  .then(data => {
+    const citiesLayer = L.geoJSON(data, {
+      style: feature => ({
+        color: "#333",
+        weight: 1.5,
+        dashArray: "4",
+        fillColor: nameColors[feature.properties.NAME] || "#cccccc",
+        fillOpacity: 0.5
+      }),
+      onEachFeature: (feature, layer) => {
+        if (feature.properties && feature.properties.NAME) {
+          layer.bindPopup(`<strong>${feature.properties.NAME}</strong>`);
+        }
+      }
+    });
+    overlays["Cities"] = citiesLayer;
+    layerControl.addOverlay(citiesLayer, "Cities");
+    // citiesLayer.addTo(map); // optionally show by default
+  });
+
+  // Load and add Military Boundaries layer
+  fetch('data/military-boundaries.geojson')
+  .then(response => response.json())
+  .then(data => {
+    const militaryLayer = L.geoJSON(data, {
+      style: feature => ({
+        color: "#333",
+        weight: 1.5,
+        dashArray: "4",
+        fillColor: nameColors[feature.properties.NAME] || "#cccccc",
+        fillOpacity: 0.5
+      }),
+      onEachFeature: (feature, layer) => {
+        if (feature.properties && feature.properties.NAME) {
+          layer.bindPopup(`<strong>${feature.properties.NAME}</strong>`);
+        }
+      }
+    });
+    // militaryLayer.addTo(map); // uncomment to display layer by default
+    overlays["Military Boundaries"] = militaryLayer;
+    layerControl.addOverlay(militaryLayer, "Military Boundaries");
+    
+    // Add "Additional Layers" title above the overlays list
+    setTimeout(() => {
+      const overlaysList = document.querySelector('.leaflet-control-layers-overlays');
+      if (overlaysList) {
+        const title = document.createElement('div');
+        title.textContent = 'Additional Layers';
+        title.style.fontWeight = 'bold';
+        title.style.fontSize = '16px';
+        title.style.padding = '4px 8px';
+        title.style.background = '#fff';
+        title.style.borderBottom = '1px solid #ccc';
+        overlaysList.parentNode.insertBefore(title, overlaysList);
+      }
+    }, 0);
+  });
 
   // Setup UI
   initializeInputs();
