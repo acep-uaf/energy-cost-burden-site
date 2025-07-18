@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   // === 1. DOM & Data Setup ===
-  const censusTractCsvUrl = "/data/census-tract-input-vector-minus-4.csv";
-  const censusTractGeoJsonUrl = "/data/census-estimates-minus-1.geojson";
+  const censusTractCsvUrl = "/data/census-tract-input-vector.csv";
+  const censusTractGeoJsonUrl = "/data/census-estimates.geojson";
   let rawData = [];
   let mapLayer;
 
