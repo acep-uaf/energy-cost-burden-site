@@ -117,8 +117,7 @@ button[type="reset-button"] {
   width: 100%;
 }
 
-button[type="download"] {
-  align-items: center;
+.download-button {
   background-color: #71984A;
   border: 0;
   border-radius: 100px;
@@ -135,13 +134,10 @@ button[type="download"] {
   min-height: 40px;
   min-width: 0px;
   overflow: hidden;
-  padding: 0px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: 0 20px;
   text-align: center;
   touch-action: manipulation;
   user-select: none;
-  -webkit-user-select: none;
   vertical-align: middle;
   width: 50%;
 }
