@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           const prices = getUserPrices();
           const { result: dataWithResults } = processData(rawData, prices);
 
-          console.log(dataWithResults)
+          // console.log(dataWithResults)
       
           const csvRows = [[
             "TractLong", 
@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           const blob = new Blob([csvContent], { type: "text/csv" });
           const url = URL.createObjectURL(blob);
       
-          console.log(csvContent)
+          // console.log(csvContent)
 
           const a = document.createElement("a");
           a.href = url;
