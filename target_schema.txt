@@ -1,0 +1,7 @@
+// target schema for CSV download
+Census tract name, 
+average annual household space heating (mmbtu), 
+average annual electricity use (mmbtu), 
+cost columns for each, 
+median household income, 
+and energy burden.

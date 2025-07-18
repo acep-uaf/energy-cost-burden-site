@@ -131,25 +131,29 @@ document.addEventListener("DOMContentLoaded", async () => {
         
       document.getElementById("download-csv")
         .addEventListener("click", (e) => {
-            const prices = getUserPrices();
-            const csvRows = [["Fuel", "Price"]];
+          const prices = getUserPrices();
+          const dataWithResults = processData(rawData, prices);
 
-            for (const key in prices) {
-                csvRows.push([key, prices[key]]);
-            }
-
-            const csvContent = csvRows.map(row => row.join(",")).join("\n");
-
-            console.log(csvContent)
-
-            const blob = new Blob([csvContent], { type: "text/csv" });
-            const url = URL.createObjectURL(blob);
-
-            const link = e.currentTarget;
-            link.href = url;
-
-            // Optional: Clean up object URL after download
-            setTimeout(() => URL.revokeObjectURL(url), 1000);
+          console.log(dataWithResults)
+      
+          const csvRows = [["TractLong", "Description"]];
+      
+          for (const row of dataWithResults) {
+            csvRows.push([
+              row.TractLong,
+              row.Description
+            ]);
+          }
+      
+          const csvContent = csvRows.map(r => r.join(",")).join("\n");
+          const blob = new Blob([csvContent], { type: "text/csv" });
+          const url = URL.createObjectURL(blob);
+      
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "energy-burden.csv";
+          a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
         });
     }
   
@@ -229,11 +233,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         return (1_000_000 / (fuel.btu_per_unit * fuel.efficiency)) * fuel.price;
       }
   
-      const heatCostMMBTU = Object.values(fuels).reduce((s, f) => s + pricePerMMBTU(f) * f.share, 0);
+      const HeatCostMmbtu = Object.values(fuels).reduce((s, f) => s + pricePerMMBTU(f) * f.share, 0);
   
       return data.map(entry => {
         entry.AnnualElectricityCost = safeMultiply(safeMultiply(kWhFromBTU, prices.electricity), entry.AnnualElectricityMmbtu);
-        entry.AnnualSpaceHeatingCost = safeMultiply(entry.AnnualSpaceHeatingMmbtu, heatCostMMBTU);
+        entry.AnnualSpaceHeatingCost = safeMultiply(entry.AnnualSpaceHeatingMmbtu, HeatCostMmbtu);
         entry.AnnualElectricityCostHh = safeDivide(entry.AnnualElectricityCost, entry.OccupiedUnits);
         entry.AnnualSpaceHeatingCostHh = safeDivide(entry.AnnualSpaceHeatingCost, entry.OccupiedUnits);
         entry.AnnualEnergyUseCostHh = safeAdd(entry.AnnualElectricityCostHh, entry.AnnualSpaceHeatingCostHh);
@@ -255,17 +259,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   
       const AnnualSpaceHeatingCost = parsedData.reduce((sum, d) => sum + (d.AnnualSpaceHeatingCost || 0), 0);
       const AnnualSpaceHeatingMmbtu = parsedData.reduce((sum, d) => sum + (d.AnnualSpaceHeatingMmbtu || 0), 0);
-      const AverageAnnualSpaceHeatingCost = safeDivide(AnnualSpaceHeatingCost, AnnualSpaceHeatingMmbtu);
+      const WeightedAverageSpaceHeatingCost = safeDivide(AnnualSpaceHeatingCost, AnnualSpaceHeatingMmbtu);
   
       const AnnualElectricityCost = parsedData.reduce((sum, d) => sum + (d.AnnualElectricityCost || 0), 0);
       const AnnualElectricityMmbtu = parsedData.reduce((sum, d) => sum + (d.AnnualElectricityMmbtu || 0), 0);
-      const AverageAnnualElectricityCost = safeDivide(AnnualElectricityCost, AnnualElectricityMmbtu);
+      const AverageElectricityCost = safeDivide(AnnualElectricityCost, AnnualElectricityMmbtu);
   
-      document.getElementById("weighted_average_space_heating_cost").textContent =
-        AverageAnnualSpaceHeatingCost != null ? `$${AverageAnnualSpaceHeatingCost.toFixed(2)}` : "N/A";
+      document.getElementById("WeightedAverageSpaceHeatingCost").textContent =
+        WeightedAverageSpaceHeatingCost != null ? `$${WeightedAverageSpaceHeatingCost.toFixed(2)}` : "N/A";
   
-      document.getElementById("average_electricity_cost").textContent =
-        AverageAnnualElectricityCost != null ? `$${AverageAnnualElectricityCost.toFixed(2)}` : "N/A";
+      document.getElementById("AverageElectricityCost").textContent =
+        AverageElectricityCost != null ? `$${AverageElectricityCost.toFixed(2)}` : "N/A";
     }
   
     function initializeInputs() {
