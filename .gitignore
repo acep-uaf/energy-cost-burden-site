@@ -2,8 +2,7 @@
 # Ignore Hugo build, public/
 public/
 
-# Preprocessing scripts
-*.R
+*.Rprofile
 
 # Binaries
 *.shp
