@@ -148,13 +148,13 @@ document.addEventListener("DOMContentLoaded", async () => {
           "MedianHouseholdIncome",
           "EnergyBurden",
       
-          "ElectricityPrice",
-          "HFOPrice",
-          "CordWoodPrice",
-          "NaturalGasPrice",
-          "PelletPrice",
-          "CoalPrice",
-          "DistrictHeatPrice"
+          "ElectricityPriceInput",
+          "HeatingFuelOilPriceInput",
+          "CordWoodPriceInput",
+          "NaturalGasPriceInput",
+          "PelletPriceInput",
+          "CoalPriceInput",
+          "DistrictHeatPriceInput"
         ]);
       
         for (const row of dataWithResults) {
@@ -192,6 +192,64 @@ document.addEventListener("DOMContentLoaded", async () => {
       
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       });
+
+      document.getElementById("download-geojson").addEventListener("click", () => {
+        const prices = getUserPrices();
+        const { result: dataWithResults } = processData(rawData, prices);
+      
+        // Create a mapping from TractLong → dataWithResults entry
+        const dataMap = {};
+        for (const row of dataWithResults) {
+          dataMap[row.TractLong] = row;
+        }
+      
+        // Create GeoJSON FeatureCollection
+        const geojson = {
+          type: "FeatureCollection",
+          features: rawData.map(entry => {
+            const row = dataMap[entry.TractLong];
+      
+            return {
+              type: "Feature",
+              geometry: entry.geometry, // previously assigned in rawData setup
+              properties: {
+                TractLong: row.TractLong,
+                CensusTractName: row.Description,
+      
+                AverageHouseholdElectricityMmbtu: row.AverageHouseholdElectricityMmbtu,
+                AverageHouseholdSpaceHeatingMmbtu: row.AverageHouseholdSpaceHeatingMmbtu,
+      
+                AverageHouseholdElectricityCost: row.AverageHouseholdElectricityCost,
+                AverageHouseholdSpaceHeatingCost: row.AverageHouseholdSpaceHeatingCost,
+      
+                MedianHouseholdIncome: row.MedianHouseholdIncome,
+                EnergyBurden: row.EnergyBurden,
+      
+                // Prices used in this calculation
+                ElectricityPriceInput: prices.electricity,
+                HeatingFuelOilPriceInput: prices.hfo,
+                CordWoodPriceInput: prices.cord_wood,
+                NaturalGasPriceInput: prices.natural_gas,
+                PelletPriceInput: prices.pellet,
+                CoalPriceInput: prices.coal,
+                DistrictHeatPriceInput: prices.district_heat
+              }
+            };
+          })
+        };
+      
+        // Download the GeoJSON
+        const blob = new Blob([JSON.stringify(geojson, null, 2)], { type: "application/geo+json" });
+        const url = URL.createObjectURL(blob);
+      
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "fairbanksEnergyBurden.geojson";
+        a.click();
+      
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      });
+
     }
   
     function runCalculationAndRender() {
