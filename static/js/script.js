@@ -129,54 +129,69 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         
-      document.getElementById("download-csv")
-        .addEventListener("click", (e) => {
-          const prices = getUserPrices();
-          const { result: dataWithResults } = processData(rawData, prices);
-
-          // console.log(dataWithResults)
+      document.getElementById("download-csv").addEventListener("click", (e) => {
+        const prices = getUserPrices();
+        const { result: dataWithResults } = processData(rawData, prices);
       
-          const csvRows = [[
-            "TractLong", 
-            "CensusTractName",  
-
-            "AverageHouseholdElectricityMmbtu", 
-            "AverageHouseholdSpaceHeatingMmbtu", 
-
-            "AverageHouseholdElectricityCost",
-            "AverageHouseholdSpaceHeatingCost",
-
-            "MedianHouseholdIncome", 
-            "EnergyBurden"]];
+        const csvRows = [];
       
-          for (const row of dataWithResults) {
-            csvRows.push([
-              row.TractLong,
-              row.Description,
-
-              row.AverageHouseholdElectricityMmbtu != null ? row.AverageHouseholdElectricityMmbtu.toFixed(2) : "",
-              row.AverageHouseholdSpaceHeatingMmbtu != null ? row.AverageHouseholdSpaceHeatingMmbtu.toFixed(2) : "",
-
-              row.AverageHouseholdElectricityCost != null ? row.AverageHouseholdElectricityCost.toFixed(2) : "",
-              row.AverageHouseholdSpaceHeatingCost != null ? row.AverageHouseholdSpaceHeatingCost.toFixed(2) : "",
-
-              row.MedianHouseholdIncome,
-              row.EnergyBurden != null ? row.EnergyBurden.toFixed(2) : ""
-            ]);
-          }
+        csvRows.push([
+          "TractLong",
+          "CensusTractName",
       
-          const csvContent = csvRows.map(r => r.join(",")).join("\n");
-          const blob = new Blob([csvContent], { type: "text/csv" });
-          const url = URL.createObjectURL(blob);
+          "AverageHouseholdElectricityMmbtu",
+          "AverageHouseholdSpaceHeatingMmbtu",
       
-          // console.log(csvContent)
-
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "fairbanksEnergyBurden.csv";
-          a.click();
-          setTimeout(() => URL.revokeObjectURL(url), 1000);
-        });
+          "AverageHouseholdElectricityCost",
+          "AverageHouseholdSpaceHeatingCost",
+      
+          "MedianHouseholdIncome",
+          "EnergyBurden",
+      
+          "ElectricityPrice",
+          "HFOPrice",
+          "CordWoodPrice",
+          "NaturalGasPrice",
+          "PelletPrice",
+          "CoalPrice",
+          "DistrictHeatPrice"
+        ]);
+      
+        for (const row of dataWithResults) {
+          csvRows.push([
+            row.TractLong,
+            row.Description,
+      
+            row.AverageHouseholdElectricityMmbtu != null ? row.AverageHouseholdElectricityMmbtu.toFixed(2) : "",
+            row.AverageHouseholdSpaceHeatingMmbtu != null ? row.AverageHouseholdSpaceHeatingMmbtu.toFixed(2) : "",
+      
+            row.AverageHouseholdElectricityCost != null ? row.AverageHouseholdElectricityCost.toFixed(2) : "",
+            row.AverageHouseholdSpaceHeatingCost != null ? row.AverageHouseholdSpaceHeatingCost.toFixed(2) : "",
+      
+            row.MedianHouseholdIncome,
+            row.EnergyBurden != null ? row.EnergyBurden.toFixed(2) : "",
+      
+            prices.electricity,
+            prices.hfo,
+            prices.cord_wood,
+            prices.natural_gas,
+            prices.pellet,
+            prices.coal,
+            prices.district_heat
+          ]);
+        }
+      
+        const csvContent = csvRows.map(r => r.join(",")).join("\n");
+        const blob = new Blob([csvContent], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+      
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "fairbanksEnergyBurden.csv";
+        a.click();
+      
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      });
     }
   
     function runCalculationAndRender() {
