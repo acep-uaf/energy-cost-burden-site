@@ -154,6 +154,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const prices = getUserPrices();
     const dataWithResults = processData(rawData, prices);
 
+    console.log("🔎 Example result:", dataWithResults?.[0]);
+
     updateSidebar(dataWithResults);
     renderMapLayer(dataWithResults);
   }
@@ -237,15 +239,48 @@ document.addEventListener("DOMContentLoaded", async () => {
       entry.energyBurden = safeMultiply(safeDivide(entry.AnnualEnergyUse_cost_hh, entry.MedianHouseholdIncome), 100);
       return entry;
     });
+
+    
   }
 
-  // === 5. Sidebar Summary ===
+  // === 5. Sidebar ===
   function updateSidebar(data) {
-    const sb = document.getElementById("sidebar-results");
-    if (!sb) return;
-    const avg = data.reduce((s, d) => s + (d.energyBurden || 0), 0) / data.length;
-    sb.innerHTML = `<h4>Avg Energy Burden</h4><p>${avg.toFixed(2)}%</p>`;
-  }
+    if (!Array.isArray(data) || data.length === 0) {
+      console.warn("updateSidebar skipped — data is empty or invalid", data);
+      return;
+    }
+
+    data.AnnualElectricity_mmbtu = parseFloat(data.AnnualElectricity_mmbtu);
+    data.AnnualSpaceHeating_mmbtu = parseFloat(data.AnnualSpaceHeating_mmbtu);
+
+    console.log("🧪 updateSidebar called with data:", data);
+  
+    // === Avg Energy Burden ===
+    // const avgEnergyBurden = data.reduce((s, d) => s + (d.energyBurden || 0), 0) / data.length;
+  
+    // === Weighted Avg Heating Cost ($/MMBtu) ===
+    const totalSpaceHeatingCost = data.reduce((s, d) => s + (d.AnnualSpaceHeating_cost || 0), 0);
+    const totalSpaceHeatingMMBTU = data.reduce((s, d) => s + (d.AnnualSpaceHeating_mmbtu || 0), 0);
+    const avgHeatingCost = safeDivide(totalSpaceHeatingCost, totalSpaceHeatingMMBTU);
+  
+    // === Average Electricity Cost ($/MMBtu) ===
+    const totalElectricityCost = data.reduce((s, d) => s + (d.AnnualElectricity_cost || 0), 0);
+    const totalElectricityMMBTU = data.reduce((s, d) => s + (d.AnnualElectricity_mmbtu || 0), 0);
+    const avgElectricityCost = safeDivide(totalElectricityCost, totalElectricityMMBTU);
+
+    document.getElementById("weighted_average_space_heating_cost").textContent = `$${avgHeatingCost.toFixed(2)}`;
+
+    document.getElementById("average_electricity_cost").textContent = `$${avgElectricityCost.toFixed(2)}`;
+
+    // document.getElementById("average_energy_burden").textContent = `${avgEnergyBurden.toFixed(2)}%`;
+
+    console.log("💡 totalSpaceHeatingCost:", totalSpaceHeatingCost);
+    console.log("💡 totalSpaceHeatingMMBTU:", totalSpaceHeatingMMBTU);
+    console.log("💡 totalElectricityCost:", totalElectricityCost);
+    console.log("💡 totalElectricityMMBTU:", totalElectricityMMBTU);
+    console.log(avgElectricityCost);
+
+  }  
 
   // === 6. Utilities ===
   function safeDivide(a, b) {
