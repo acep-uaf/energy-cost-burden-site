@@ -132,16 +132,36 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("download-csv")
         .addEventListener("click", (e) => {
           const prices = getUserPrices();
-          const dataWithResults = processData(rawData, prices);
+          const { result: dataWithResults } = processData(rawData, prices);
 
           console.log(dataWithResults)
       
-          const csvRows = [["TractLong", "Description"]];
+          const csvRows = [[
+            "TractLong", 
+            "CensusTractName",  
+
+            "AverageHouseholdElectricityMmbtu", 
+            "AverageHouseholdSpaceHeatingMmbtu", 
+
+            "AverageHouseholdElectricityCost",
+            "AverageHouseholdSpaceHeatingCost",
+
+            "MedianHouseholdIncome", 
+            "EnergyBurden"]];
       
           for (const row of dataWithResults) {
             csvRows.push([
               row.TractLong,
-              row.Description
+              row.Description,
+
+              row.AverageHouseholdElectricityMmbtu != null ? row.AverageHouseholdElectricityMmbtu.toFixed(2) : "",
+              row.AverageHouseholdSpaceHeatingMmbtu != null ? row.AverageHouseholdSpaceHeatingMmbtu.toFixed(2) : "",
+
+              row.AverageHouseholdElectricityCost != null ? row.AverageHouseholdElectricityCost.toFixed(2) : "",
+              row.AverageHouseholdSpaceHeatingCost != null ? row.AverageHouseholdSpaceHeatingCost.toFixed(2) : "",
+
+              row.MedianHouseholdIncome,
+              row.EnergyBurden != null ? row.EnergyBurden.toFixed(2) : ""
             ]);
           }
       
@@ -149,9 +169,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           const blob = new Blob([csvContent], { type: "text/csv" });
           const url = URL.createObjectURL(blob);
       
+          console.log(csvContent)
+
           const a = document.createElement("a");
           a.href = url;
-          a.download = "energy-burden.csv";
+          a.download = "fairbanksEnergyBurden.csv";
           a.click();
           setTimeout(() => URL.revokeObjectURL(url), 1000);
         });
@@ -159,7 +181,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   
     function runCalculationAndRender() {
       const prices = getUserPrices();
-      const dataWithResults = processData(rawData, prices);
+      const { result: dataWithResults } = processData(rawData, prices);
   
       updateSidebar(dataWithResults);
       renderMapLayer(dataWithResults);
@@ -220,6 +242,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   
     function processData(data, prices) {
       const kWhFromBTU = safeDivide(1_000_000, 3412);
+    
       const fuels = {
         hfo: { price: prices.hfo, efficiency: 0.85, share: 0.73, btu_per_unit: 137400 },
         cord_wood: { price: prices.cord_wood, efficiency: 0.7, share: 0.235, btu_per_unit: 17750000 },
@@ -228,22 +251,27 @@ document.addEventListener("DOMContentLoaded", async () => {
         coal: { price: prices.coal, efficiency: 0.55, share: 0.005, btu_per_unit: 15200000 },
         district_heat: { price: prices.district_heat, efficiency: 1.0, share: 0.016, btu_per_unit: 1066000 }
       };
-  
+    
       function pricePerMMBTU(fuel) {
         return (1_000_000 / (fuel.btu_per_unit * fuel.efficiency)) * fuel.price;
       }
-  
-      const HeatCostMmbtu = Object.values(fuels).reduce((s, f) => s + pricePerMMBTU(f) * f.share, 0);
-  
-      return data.map(entry => {
+    
+      const HeatCostMmbtu = Object.values(fuels)
+        .reduce((s, f) => s + pricePerMMBTU(f) * f.share, 0);
+    
+      const result = data.map(entry => {
+        entry.AverageHouseholdElectricityMmbtu = safeDivide(entry.AnnualElectricityMmbtu, entry.OccupiedUnits);
+        entry.AverageHouseholdSpaceHeatingMmbtu = safeDivide(entry.AnnualSpaceHeatingMmbtu, entry.OccupiedUnits);
         entry.AnnualElectricityCost = safeMultiply(safeMultiply(kWhFromBTU, prices.electricity), entry.AnnualElectricityMmbtu);
         entry.AnnualSpaceHeatingCost = safeMultiply(entry.AnnualSpaceHeatingMmbtu, HeatCostMmbtu);
-        entry.AnnualElectricityCostHh = safeDivide(entry.AnnualElectricityCost, entry.OccupiedUnits);
-        entry.AnnualSpaceHeatingCostHh = safeDivide(entry.AnnualSpaceHeatingCost, entry.OccupiedUnits);
-        entry.AnnualEnergyUseCostHh = safeAdd(entry.AnnualElectricityCostHh, entry.AnnualSpaceHeatingCostHh);
+        entry.AverageHouseholdElectricityCost = safeDivide(entry.AnnualElectricityCost, entry.OccupiedUnits);
+        entry.AverageHouseholdSpaceHeatingCost = safeDivide(entry.AnnualSpaceHeatingCost, entry.OccupiedUnits);
+        entry.AnnualEnergyUseCostHh = safeAdd(entry.AverageHouseholdElectricityCost, entry.AverageHouseholdSpaceHeatingCost);
         entry.EnergyBurden = safeMultiply(safeDivide(entry.AnnualEnergyUseCostHh, entry.MedianHouseholdIncome), 100);
         return entry;
       });
+    
+      return { result };
     }
   
     function updateSidebar(data) {
