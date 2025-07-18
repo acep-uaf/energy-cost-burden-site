@@ -1,4 +1,4 @@
-AnnualElectricity_mmbtu,AnnualSpaceHeating_mmbtu,TractLong,Description,OccupiedUnits,MedianHouseholdIncome
+AnnualElectricityMmbtu,AnnualSpaceHeatingMmbtu,TractLong,Description,OccupiedUnits,MedianHouseholdIncome
 17890.74468,55077.74135,980100,Eielson AFB,792,63036
 72035.21635,221764.7775,001501,Badger East/Moose Creek Dam,1654,109191
 105902.2144,326026.3827,001902,Chena River Valley,2188,89980
