@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const censusTractCsvUrl = "/data/census-tract-input-vector.csv";
-    const censusTractGeoJsonUrl = "/data/census-estimates.geojson";
+    const censusTractGeoJsonUrl = "/data/fnsb-tracts.geojson";
     let rawData = [];
     let mapLayer;
   
