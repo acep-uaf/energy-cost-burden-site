@@ -6,7 +6,8 @@ public/
 
 # Binaries
 *.shp
-
+*.gpkg
+*.pbf
 
 # Mac files
 .DS_Store
