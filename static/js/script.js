@@ -57,6 +57,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       const legend = L.control({ position: 'bottomright' });
       legend.onAdd = function (map) {
         const div = L.DomUtil.create('div', 'info legend');
+        div.style.fontFamily = "'Barlow', sans-serif";
+        div.style.fontWeight = "bold";
         const grades = [0.00, 0.02, 0.04, 0.06, 0.08, 0.10, 0.12, 0.15];
   
         div.innerHTML += '<h4>Estimated Energy Burden</h4>';
@@ -94,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           weight: 1.5,
           dashArray: "4",
           fillColor: nameColors[feature.properties.NAME] || "#cccccc",
-          fillOpacity: 0.5
+          fillOpacity: 0.0
         }),
         onEachFeature: (feature, layer) => {
           if (feature.properties && feature.properties.NAME) {
@@ -110,6 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const title = document.createElement('div');
         title.textContent = 'Additional Layers';
         title.style.fontWeight = 'bold';
+        title.style.fontFamily = 'Barlow';
         title.style.fontSize = '16px';
         title.style.padding = '4px 8px';
         title.style.background = '#fff';
