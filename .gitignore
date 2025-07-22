@@ -8,6 +8,15 @@ public/
 *.shp
 *.gpkg
 *.pbf
+*.mapdb
+*.p
+*.dat
+
+# Isochrone building data dir
+r-scripts/data/
+
+# Java dir
+rjavaenv/
 
 # Mac files
 .DS_Store
