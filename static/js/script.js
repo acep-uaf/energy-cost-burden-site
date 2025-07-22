@@ -1,3 +1,54 @@
+// Adding dynamic tooltips (click-to-stick version)
+
+//// Tooltip content for each topic
+const tooltipData = {
+  efficiency: `<p>Efficiency refers to how well inputs are converted into outputs. For heating fuels, this is energy burden to useful heat energy.</p> <p>Source: <a href="https://www.fnsb.gov/ArchiveCenter/ViewFile/Item/380#page=49" target="_blank" rel="noopener noreferrer">Fairbanks North Star Borough, Department of Community Planning, Community Research
+Quarterly, Vol. XLVI, No. 3, 2023.</a>.</p>`,
+  market: `<p>Market share in this context indicates the share of households in the Borough that use this fuel as their primary source of heat.</p> <p>Source: <a href="https://dec.alaska.gov/media/7554/fbks-2013-15-hhsurvey.pdf" target="_blank" rel="noopener noreferrer">Carlson, T.; Zhang, W. Analysis of Fairbanks 2013-2015 Home Heating Surveys. Sierra Research. 2015, pp 1–39</a>.</p>`
+};
+
+//// Create one tooltip box
+const tooltip = document.createElement('div');
+tooltip.className = 'tooltip-box';
+document.body.appendChild(tooltip);
+
+let activeTooltipTarget = null;
+
+//// Handle click for all tooltip triggers
+document.querySelectorAll('.tooltip-trigger').forEach(el => {
+  el.addEventListener('click', e => {
+    e.stopPropagation(); // Prevent closing when clicking the trigger
+    const topic = el.dataset.topic;
+
+    // If already active, toggle off
+    if (activeTooltipTarget === el) {
+      tooltip.style.display = 'none';
+      activeTooltipTarget = null;
+      return;
+    }
+
+    // Set new content and show tooltip
+    tooltip.innerHTML = tooltipData[topic] || '';
+    tooltip.style.display = 'block';
+    activeTooltipTarget = el;
+
+    // Position below the clicked element
+    const rect = el.getBoundingClientRect();
+    tooltip.style.left = `${rect.left + window.scrollX}px`;
+    tooltip.style.top = `${rect.bottom + window.scrollY + 6}px`;
+  });
+});
+
+// Hide tooltip when clicking anywhere else
+document.addEventListener('click', e => {
+  if (!tooltip.contains(e.target)) {
+    tooltip.style.display = 'none';
+    activeTooltipTarget = null;
+  }
+});
+
+
+
 document.addEventListener("DOMContentLoaded", async () => {
     const censusTractCsvUrl = "/data/census-tract-input-vector.csv";
     const censusTractGeoJsonUrl = "/data/census-estimates.geojson";

@@ -24,7 +24,11 @@
     <form id="price-form">
       <div class="input-group">
         <label for="hfo_price">Heating Fuel Oil Price ($/gallon)</label>
-        <div class="subtitle">Efficiency: 85% | Market Share: 73%</div>
+        <div class="subtitle">
+          <span class="tooltip-trigger" data-topic="efficiency">Efficiency</span>: 85% |
+          <span class="tooltip-trigger" data-topic="market">Market Share</span>: 73%
+        </div>
+
         <div class="controls">
           <input type="range" id="hfo_price" min="0" max="10" step="0.01">
           <input type="number" id="hfo_input" min="0" max="10" step="0.01">
@@ -33,7 +37,10 @@
 
       <div class="input-group">
         <label for="cord_wood_price">Cord Wood Price ($/cord)</label>
-        <div class="subtitle">Efficiency: 70% | Market Share: 23.5%</div>
+        <div class="subtitle">
+          <span class="tooltip-trigger" data-topic="efficiency">Efficiency</span>: 70% |
+          <span class="tooltip-trigger" data-topic="market">Market Share</span>: 23.5%
+        </div>
         <div class="controls">
           <input type="range" id="cord_wood_price" min="0" max="600" step="0.01">
           <input type="number" id="cord_wood_input" min="0" max="600" step="0.01">
@@ -42,7 +49,10 @@
 
       <div class="input-group">
         <label for="pellet_price">Pellet Price ($/ton)</label>
-        <div class="subtitle">Efficiency: 85% | Market Share: 0.9%</div>
+        <div class="subtitle">
+          <span class="tooltip-trigger" data-topic="efficiency">Efficiency</span>: 85% |
+          <span class="tooltip-trigger" data-topic="market">Market Share</span>: 0.9%
+        </div>
         <div class="controls">
           <input type="range" id="pellet_price" min="0" max="600" step="0.01">
           <input type="number" id="pellet_input" min="0" max="600" step="0.01">
@@ -51,7 +61,10 @@
 
       <div class="input-group">
         <label for="natural_gas_price">Natural Gas Price ($/CCF)</label>
-        <div class="subtitle">Efficiency: 85% | Market Share: 0.6%</div>
+        <div class="subtitle">
+          <span class="tooltip-trigger" data-topic="efficiency">Efficiency</span>: 85% |
+          <span class="tooltip-trigger" data-topic="market">Market Share</span>: 0.6%
+        </div>
         <div class="controls">
           <input type="range" id="natural_gas_price" min="0" max="5" step="0.01">
           <input type="number" id="natural_gas_input" min="0" max="5" step="0.01">
@@ -60,7 +73,10 @@
 
       <div class="input-group">
         <label for="coal_price">Coal Price ($/ton)</label>
-        <div class="subtitle">Efficiency: 55% | Market Share: 0.5%</div>
+        <div class="subtitle">
+          <span class="tooltip-trigger" data-topic="efficiency">Efficiency</span>: 55% |
+          <span class="tooltip-trigger" data-topic="market">Market Share</span>: 0.5%
+        </div>
         <div class="controls">
           <input type="range" id="coal_price" min="0" max="400" step="0.01">
           <input type="number" id="coal_input" min="0" max="400" step="0.01">
@@ -69,7 +85,10 @@
 
       <div class="input-group">
         <label for="district_heat_price">District Heat Price ($/1,000 lbs)</label>
-        <div class="subtitle">Efficiency: 100% | Market Share: 1.6%</div>
+        <div class="subtitle">
+          <span class="tooltip-trigger" data-topic="efficiency">Efficiency</span>: 100% |
+          <span class="tooltip-trigger" data-topic="market">Market Share</span>: 1.6%
+        </div>
         <div class="controls">
           <input type="range" id="district_heat_price" min="0" max="50" step="0.01">
           <input type="number" id="district_heat_input" min="0" max="50" step="0.01">
