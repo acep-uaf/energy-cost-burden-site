@@ -1,10 +1,10 @@
 // Adding dynamic tooltips (click-to-stick version)
-
 //// Tooltip content for each topic
 const tooltipData = {
   efficiency: `<p>Efficiency refers to how well inputs are converted into outputs. For heating fuels, this is energy burden to useful heat energy.</p> <p>Source: <a href="https://www.fnsb.gov/ArchiveCenter/ViewFile/Item/380#page=49" target="_blank" rel="noopener noreferrer">Fairbanks North Star Borough, Department of Community Planning, Community Research
 Quarterly, Vol. XLVI, No. 3, 2023.</a>.</p>`,
-  market: `<p>Market share in this context indicates the share of households in the Borough that use this fuel as their primary source of heat.</p> <p>Source: <a href="https://dec.alaska.gov/media/7554/fbks-2013-15-hhsurvey.pdf" target="_blank" rel="noopener noreferrer">Carlson, T.; Zhang, W. Analysis of Fairbanks 2013-2015 Home Heating Surveys. Sierra Research. 2015, pp 1–39</a>.</p>`
+  market: `<p>Market share in this context indicates the share of households in the Borough that use this fuel as their primary source of heat.</p> <p>Source: <a href="https://dec.alaska.gov/media/7554/fbks-2013-15-hhsurvey.pdf" target="_blank" rel="noopener noreferrer">Carlson, T.; Zhang, W. Analysis of Fairbanks 2013-2015 Home Heating Surveys. Sierra Research. 2015, pp 1–39</a>.</p>`,
+  weightavg: `<p>The average of the energy burdens across all census tracts in the borough. Weighted by the number of occupied units in each tract.</p>`
 };
 
 //// Create one tooltip box
@@ -308,9 +308,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   
     function runCalculationAndRender() {
       const prices = getUserPrices();
-      const { result: dataWithResults } = processData(rawData, prices);
+      const { result: dataWithResults, weightedAverageEnergyBurden} = processData(rawData, prices);
   
-      updateSidebar(dataWithResults);
+      updateSidebar(dataWithResults, weightedAverageEnergyBurden);
       renderMapLayer(dataWithResults);
     }
   
@@ -397,11 +397,32 @@ document.addEventListener("DOMContentLoaded", async () => {
         entry.EnergyBurden = safeMultiply(safeDivide(entry.AnnualEnergyUseCostHh, entry.MedianHouseholdIncome), 100);
         return entry;
       });
-    
-      return { result };
+
+      // -- Calculating the Weighted Average Energy Burden --
+      let totalWeightedBurden = 0;
+      let totalWeight = 0;
+
+      result.forEach(entry => {
+        const weight = parseFloat(entry.OccupiedUnits);
+        const burden = parseFloat(entry.EnergyBurden);
+
+        if (!isNaN(weight) && weight > 0 && !isNaN(burden)) {
+          totalWeightedBurden = safeAdd(totalWeightedBurden, safeMultiply(weight, burden));
+          totalWeight = safeAdd(totalWeight, weight);
+        }
+      });
+
+      const weightedAverageEnergyBurden = safeDivide(totalWeightedBurden, totalWeight);
+
+      // -- Temporary Debugging --
+      // console.log("TotalWeightedBurden:", totalWeightedBurden);
+      // console.log("TotalWeight:", totalWeight);
+      // console.log("WeightedAverageEnergyBurden:", weightedAverageEnergyBurden);
+
+      return { result, weightedAverageEnergyBurden };
     }
   
-    function updateSidebar(data) {
+    function updateSidebar(data, weightedAverageEnergyBurden) {
       if (!Array.isArray(data) || data.length === 0) return;
   
       const parsedData = data.map(d => ({
@@ -419,12 +440,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       const AnnualElectricityCost = parsedData.reduce((sum, d) => sum + (d.AnnualElectricityCost || 0), 0);
       const AnnualElectricityMmbtu = parsedData.reduce((sum, d) => sum + (d.AnnualElectricityMmbtu || 0), 0);
       const AverageElectricityCost = safeDivide(AnnualElectricityCost, AnnualElectricityMmbtu);
-  
+
       document.getElementById("WeightedAverageSpaceHeatingCost").textContent =
         WeightedAverageSpaceHeatingCost != null ? `$${WeightedAverageSpaceHeatingCost.toFixed(2)}` : "N/A";
   
       document.getElementById("AverageElectricityCost").textContent =
         AverageElectricityCost != null ? `$${AverageElectricityCost.toFixed(2)}` : "N/A";
+
+      document.getElementById("WeightedAverageEnergyBurden").textContent =
+        weightedAverageEnergyBurden != null ? `${weightedAverageEnergyBurden.toFixed(2)}%` : "N/A";
     }
   
     function initializeInputs() {
