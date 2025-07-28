@@ -56,10 +56,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     let mapLayer;
   
     const defaultPrices = {
-      electricity: 0.25,
+      electricity: 0.25141,
       hfo: 4.40,
       cord_wood: 425,
-      natural_gas: 2.29,
+      natural_gas: 2.292,
       pellet: 350,
       coal: 143,
       district_heat: 19.59
@@ -385,6 +385,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     
       const HeatCostMmbtu = Object.values(fuels)
         .reduce((s, f) => s + pricePerMMBTU(f) * f.share, 0);
+
+      // -- Verifying the Output of HeatCostMmbtu --
+      /* Object.entries(fuels).forEach(([key, fuel]) => {
+        console.log(`Price for ${key}: $${fuel.price.toFixed(6)}`);
+      });
+
+
+      Object.entries(fuels).forEach(([key, fuel]) => {
+        const cost = pricePerMMBTU(fuel);
+        console.log(`Price per MMBtu (useful) for ${key}: $${cost.toFixed(6)}`);
+      });
+
+      console.log(`Price per MMBtu (useful) for electricity: $${safeMultiply(kWhFromBTU, prices.electricity).toFixed(6)}`); */
     
       const result = data.map(entry => {
         entry.AverageHouseholdElectricityMmbtu = safeDivide(entry.AnnualElectricityMmbtu, entry.OccupiedUnits);
@@ -415,9 +428,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       const weightedAverageEnergyBurden = safeDivide(totalWeightedBurden, totalWeight);
 
       // -- Temporary Debugging --
-      // console.log("TotalWeightedBurden:", totalWeightedBurden);
-      // console.log("TotalWeight:", totalWeight);
-      // console.log("WeightedAverageEnergyBurden:", weightedAverageEnergyBurden);
+      /* console.log("TotalWeightedBurden:", totalWeightedBurden);
+      console.log("TotalWeight:", totalWeight);
+      console.log("WeightedAverageEnergyBurden:", weightedAverageEnergyBurden); */
 
       return { result, weightedAverageEnergyBurden };
     }
@@ -455,8 +468,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       for (const key in defaultPrices) {
         const r = document.getElementById(`${key}_price`);
         const i = document.getElementById(`${key}_input`);
-        if (r) r.value = defaultPrices[key].toFixed(2);
-        if (i) i.value = defaultPrices[key].toFixed(2);
+        if (r) r.value = defaultPrices[key];
+        if (i) i.value = defaultPrices[key];
       }
     }
   
@@ -467,12 +480,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!r || !i) continue;
   
         r.addEventListener("input", () => {
-          i.value = parseFloat(r.value).toFixed(2);
+          i.value = parseFloat(r.value);
           runCalculationAndRender();
         });
   
         i.addEventListener("input", () => {
-          r.value = parseFloat(i.value).toFixed(2);
+          r.value = parseFloat(i.value);
           runCalculationAndRender();
         });
       }
