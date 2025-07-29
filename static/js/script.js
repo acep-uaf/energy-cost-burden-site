@@ -465,12 +465,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   
     function initializeInputs() {
-      for (const key in defaultPrices) {
-        const r = document.getElementById(`${key}_price`);
-        const i = document.getElementById(`${key}_input`);
-        if (r) r.value = defaultPrices[key];
-        if (i) i.value = defaultPrices[key];
-      }
+        for (const key in defaultPrices) {
+          const r = document.getElementById(`${key}_price`);
+          const i = document.getElementById(`${key}_input`);
+
+          // For natural gas and electricity: show full precision
+          const fullPrecision = (key === "natural_gas" || key === "electricity");
+
+          const value = defaultPrices[key];
+          const formatted = fullPrecision ? value : value.toFixed(2);
+
+          if (r) r.value = formatted;
+          if (i) i.value = formatted;
+        }
     }
   
     function setupSync() {
