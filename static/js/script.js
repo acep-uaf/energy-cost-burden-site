@@ -269,6 +269,8 @@ document.addEventListener("DOMContentLoaded", async () => {
               properties: {
                 TractLong: row.TractLong,
                 CensusTractName: row.Description,
+                AverageYearBuilt: row.AverageYearBuilt,
+                AverageBuildingSqft: row.AverageBuildingSqft,
       
                 AverageHouseholdElectricityMmbtu: row.AverageHouseholdElectricityMmbtu,
                 AverageHouseholdSpaceHeatingMmbtu: row.AverageHouseholdSpaceHeatingMmbtu,
@@ -352,7 +354,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   
     function popupContent(props) {
       const burden = props.EnergyBurden?.toFixed(2) + "%" || "N/A";
-      return `<strong>${props.Description}</strong><br>Energy Burden: ${burden}`;
+      return `<strong>${props.Description}</strong><br>
+      Energy Burden: ${burden}<br>
+      Median Household Income: $${Number(props.MedianHouseholdIncome).toLocaleString()}<br>
+      Average Home Built: ${props.AverageYearBuilt}<br>
+      Average Heated Area: ${props.AverageBuildingSqft} sqft`.trim();
     }
   
     function getUserPrices() {
