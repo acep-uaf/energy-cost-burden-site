@@ -192,6 +192,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         csvRows.push([
           "TractLong",
           "CensusTractName",
+          "MedianYearBuilt",
+          "MedianBuildingSqft",
       
           "AverageHouseholdElectricityMmbtu",
           "AverageHouseholdSpaceHeatingMmbtu",
@@ -215,6 +217,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           csvRows.push([
             row.TractLong,
             row.Description,
+            row.MedianYearBuilt,
+            row.MedianBuildingSqft,
       
             row.AverageHouseholdElectricityMmbtu != null ? row.AverageHouseholdElectricityMmbtu.toFixed(2) : "",
             row.AverageHouseholdSpaceHeatingMmbtu != null ? row.AverageHouseholdSpaceHeatingMmbtu.toFixed(2) : "",
