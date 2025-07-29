@@ -269,8 +269,8 @@ document.addEventListener("DOMContentLoaded", async () => {
               properties: {
                 TractLong: row.TractLong,
                 CensusTractName: row.Description,
-                AverageYearBuilt: row.AverageYearBuilt,
-                AverageBuildingSqft: row.AverageBuildingSqft,
+                MedianYearBuilt: row.MedianYearBuilt,
+                MedianBuildingSqft: row.MedianBuildingSqft,
       
                 AverageHouseholdElectricityMmbtu: row.AverageHouseholdElectricityMmbtu,
                 AverageHouseholdSpaceHeatingMmbtu: row.AverageHouseholdSpaceHeatingMmbtu,
@@ -357,8 +357,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       return `<strong>${props.Description}</strong><br>
       Energy Burden: ${burden}<br>
       Median Household Income: $${Number(props.MedianHouseholdIncome).toLocaleString()}<br>
-      Average Home Built: ${props.AverageYearBuilt}<br>
-      Average Heated Area: ${props.AverageBuildingSqft} sqft`.trim();
+      Median Year Built: ${props.MedianYearBuilt}<br>
+      Median Heated Area: ${props.MedianBuildingSqft} sqft`.trim();
     }
   
     function getUserPrices() {
