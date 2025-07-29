@@ -147,7 +147,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           weight: 1.5,
           dashArray: "4",
           fillColor: nameColors[feature.properties.NAME] || "#cccccc",
-          fillOpacity: 0.0
+          fillOpacity: 0.0,
+          interactive: false
         }),
         onEachFeature: (feature, layer) => {
           if (feature.properties && feature.properties.NAME) {
