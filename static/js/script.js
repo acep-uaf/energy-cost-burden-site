@@ -144,11 +144,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       return L.geoJSON(data, {
         style: feature => ({
           color: "#333",
-          weight: 1.5,
+          weight: 3,
           dashArray: "4",
-          fillColor: nameColors[feature.properties.NAME] || "#cccccc",
-          fillOpacity: 0.0,
-          interactive: false
+          fill: false
         }),
         onEachFeature: (feature, layer) => {
           if (feature.properties && feature.properties.NAME) {
