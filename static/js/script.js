@@ -136,6 +136,26 @@ document.addEventListener("DOMContentLoaded", async () => {
       const militaryLayer = createGeoJsonOverlay(militaryData);
       overlays["Military Boundaries"] = militaryLayer;
       layerControl.addOverlay(militaryLayer, "Military Boundaries");
+
+      const isochroneEielsonSummerData = await fetch('data/isochrone_eielson_summer.geojson').then(res => res.json());
+      const isochroneEielsonSummerLayer = createGeoJsonOverlay(isochroneEielsonSummerData);
+      overlays["Isochrone Eielson Summmer"] = isochroneEielsonSummerLayer;
+      layerControl.addOverlay(isochroneEielsonSummerLayer, "60 Mins to Eielson AFB");
+
+      const isochroneWainwrightSummerData = await fetch('data/isochrone_wainwright_summer.geojson').then(res => res.json());
+      const isochroneWainwrightSummerLayer = createGeoJsonOverlay(isochroneWainwrightSummerData);
+      overlays["Isochrone Wainwright Summmer"] = isochroneWainwrightSummerLayer;
+      layerControl.addOverlay(isochroneWainwrightSummerLayer, "60 Mins to Fort Wainwright");
+
+      const isochroneEielsonWinterData = await fetch('data/isochrone_eielson_winter.geojson').then(res => res.json());
+      const isochroneEielsonWinterLayer = createGeoJsonOverlay(isochroneEielsonWinterData);
+      overlays["Isochrone Eielson Winter"] = isochroneEielsonWinterLayer;
+      layerControl.addOverlay(isochroneEielsonWinterLayer, "60 Mins to Eielson AFB in Winter Storm");
+
+      const isochroneWainwrightWinterData = await fetch('data/isochrone_wainwright_winter.geojson').then(res => res.json());
+      const isochroneWainwrightWinterLayer = createGeoJsonOverlay(isochroneWainwrightWinterData);
+      overlays["Isochrone Wainwright Winter"] = isochroneWainwrightWinterLayer;
+      layerControl.addOverlay(isochroneWainwrightWinterLayer, "60 Mins to Fort Wainwright in Winter Storm");
   
       setTimeout(addOverlayHeader, 0);
     }
