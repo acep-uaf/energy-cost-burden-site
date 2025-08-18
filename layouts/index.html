@@ -15,15 +15,20 @@
     </div>
     <hr>
     <h2>About</h2>
-    <p>This tool estimates the average annual household energy costs as a share of total household income in the Fairbanks North Star Borough (FNSB) based on energy prices and census data.</p>
+    <p>This tool estimates the average annual household energy costs as a share of total household income in the Fairbanks North Star Borough (FNSB) census boundary based on energy prices and census data.</p>
+    <p>This tool is an extension of the 2024 Borough commissioned report: <a href="https://zenodo.org/records/12575186">Energy Burden Analysis of the Fairbanks North Star Borough</a>.</p>
     <h2>Instructions</h2>
     <p>Use the sliders or input boxes to adjust the prices of various heating fuels. The default prices are from the original study conducted in 2024 (see methodology below). The form will calculate the weighted average space heating and electricity costs based on the inputs provided. The results will be displayed below the form.</p>
     <p>The calculations will then update the <strong>estimated energy burden</strong> in each census tract and then display it on the map.</p>
     <hr>
-    <form id="price-form">
+    <div id="price-form">
       <div class="input-group">
         <label for="hfo_price">Heating Fuel Oil Price ($/gallon)</label>
-        <div class="subtitle">Efficiency: 85% | Market Share: 73%</div>
+        <div class="subtitle">
+          <span class="tooltip-trigger" data-topic="efficiency">Efficiency</span>: 85% |
+          <span class="tooltip-trigger" data-topic="market">Market Share</span>: 73%
+        </div>
+
         <div class="controls">
           <input type="range" id="hfo_price" min="0" max="10" step="0.01">
           <input type="number" id="hfo_input" min="0" max="10" step="0.01">
@@ -32,7 +37,10 @@
 
       <div class="input-group">
         <label for="cord_wood_price">Cord Wood Price ($/cord)</label>
-        <div class="subtitle">Efficiency: 70% | Market Share: 23.5%</div>
+        <div class="subtitle">
+          <span class="tooltip-trigger" data-topic="efficiency">Efficiency</span>: 70% |
+          <span class="tooltip-trigger" data-topic="market">Market Share</span>: 23.5%
+        </div>
         <div class="controls">
           <input type="range" id="cord_wood_price" min="0" max="600" step="0.01">
           <input type="number" id="cord_wood_input" min="0" max="600" step="0.01">
@@ -41,7 +49,10 @@
 
       <div class="input-group">
         <label for="pellet_price">Pellet Price ($/ton)</label>
-        <div class="subtitle">Efficiency: 85% | Market Share: 0.9%</div>
+        <div class="subtitle">
+          <span class="tooltip-trigger" data-topic="efficiency">Efficiency</span>: 85% |
+          <span class="tooltip-trigger" data-topic="market">Market Share</span>: 0.9%
+        </div>
         <div class="controls">
           <input type="range" id="pellet_price" min="0" max="600" step="0.01">
           <input type="number" id="pellet_input" min="0" max="600" step="0.01">
@@ -50,16 +61,22 @@
 
       <div class="input-group">
         <label for="natural_gas_price">Natural Gas Price ($/CCF)</label>
-        <div class="subtitle">Efficiency: 85% | Market Share: 0.6%</div>
+        <div class="subtitle">
+          <span class="tooltip-trigger" data-topic="efficiency">Efficiency</span>: 85% |
+          <span class="tooltip-trigger" data-topic="market">Market Share</span>: 0.6%
+        </div>
         <div class="controls">
-          <input type="range" id="natural_gas_price" min="0" max="5" step="0.01">
-          <input type="number" id="natural_gas_input" min="0" max="5" step="0.01">
+          <input type="range" id="natural_gas_price" min="0" max="5" step="0.001">
+          <input type="number" id="natural_gas_input" min="0" max="5" step="0.001">
         </div>
       </div>
 
       <div class="input-group">
         <label for="coal_price">Coal Price ($/ton)</label>
-        <div class="subtitle">Efficiency: 55% | Market Share: 0.5%</div>
+        <div class="subtitle">
+          <span class="tooltip-trigger" data-topic="efficiency">Efficiency</span>: 55% |
+          <span class="tooltip-trigger" data-topic="market">Market Share</span>: 0.5%
+        </div>
         <div class="controls">
           <input type="range" id="coal_price" min="0" max="400" step="0.01">
           <input type="number" id="coal_input" min="0" max="400" step="0.01">
@@ -68,7 +85,10 @@
 
       <div class="input-group">
         <label for="district_heat_price">District Heat Price ($/1,000 lbs)</label>
-        <div class="subtitle">Efficiency: 100% | Market Share: 1.6%</div>
+        <div class="subtitle">
+          <span class="tooltip-trigger" data-topic="efficiency">Efficiency</span>: 100% |
+          <span class="tooltip-trigger" data-topic="market">Market Share</span>: 1.6%
+        </div>
         <div class="controls">
           <input type="range" id="district_heat_price" min="0" max="50" step="0.01">
           <input type="number" id="district_heat_input" min="0" max="50" step="0.01">
@@ -79,8 +99,8 @@
         <label for="electricity_price">Electricity Price ($/kWh)</label>
         <div class="subtitle">Used for comparison or future estimates</div>
         <div class="controls">
-          <input type="range" id="electricity_price" min="0" max="1" step="0.01">
-          <input type="number" id="electricity_input" min="0" max="1" step="0.01">
+          <input type="range" id="electricity_price" min="0" max="1" step="0.00001">
+          <input type="number" id="electricity_input" min="0" max="1" step="0.00001">
         </div>
       </div>
 
@@ -88,10 +108,12 @@
       <div class="result-row">
         <div class="label">Weighted Average Space Heating Cost</div>
         <div class="label">Average Electricity Cost</div>
+        <div class="label"><span class="tooltip-trigger" data-topic="weightavg">Weighted Average Energy Burden</span></div>
       </div>
       <div class="result-row large-numbers">
         <div><span id="WeightedAverageSpaceHeatingCost"></span><span class="unit">/MMBtu</span></div>
         <div><span id="AverageElectricityCost"></span><span class="unit">/MMBtu</span></div>
+        <div><span id="WeightedAverageEnergyBurden"></span><span class="unit">/household</span></div>
       </div>
 
 
@@ -105,21 +127,21 @@
         <button type="button" id="download-geojson" class="download-button">Download GeoJson</button>
       </div>
 
-    </form>
+    </div>
 
     
     <hr>
-    <h2>Links</h2>
-    <ul>
-      <li><a href="https://github.com/acep-uaf/energy-cost-burden-site/wiki">Documentation and Methodology</a></li>
-      <li><a href="https://github.com/acep-uaf/energy-cost-burden-site/issues/new?template=feature_request.md">Submit a Feature Request</a></li>
-      <li><a href="https://github.com/acep-uaf/energy-cost-burden-site/issues/new?template=bug_report.md">Report a Bug</a></li>
-    </ul>
+    <h2>Methodology</h2>
+    <p>Users interested in reading more about the methodology of this tool can <a href="https://github.com/acep-uaf/energy-cost-burden-site/wiki/Methodology">visit our documentation</a></p>
     <hr>
+    <h2>Contact</h2>
+    <p>If you have questions regarding this tool, please reach out via email to <a href="mailto:ACEP.info@alaska.edu">ACEP.info@alaska.edu</a>.</p>
     <h2>Funding</h2>
     <p>Funding for this project was provided by the U.S. Department of Defense Office of Local Defense Community Cooperation Award No. GR1538-25-04.</p>
-    <h2>Notice of Nondiscrimination</h2>
-    <p>The University of Alaska is an equal opportunity/equal access employer and educational institution. The university is committed to a policy of nondiscrimination against individuals on the basis of any legally protected status.</p>
+    <hr>
+    <p style="text-align: center;"><img src="images/uaf-logo.png" alt="UAF Logo" style="max-width: 80px;"></p>
+    <p style="text-align: center;">The <a href="https://www.alaska.edu/alaska/">University of Alaska</a> is an equal opportunity/equal access employer and educational institution. The university is committed to a <a href="https://www.alaska.edu/nondiscrimination">policy of nondiscrimination</a> against individuals on the basis of any legally protected status.</p>
+    <p style="text-align: center;">UA is committed to providing accessible websites. Learn more about UA’s <a href="https://www.alaska.edu/webaccessibility/">notice of web accessibility</a>.</p>
   </div>
   <div id="map"></div>
 

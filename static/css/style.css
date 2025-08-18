@@ -9,6 +9,50 @@ body {
   font-weight: 400;
   font-style: normal;
 }
+.tooltip-trigger {
+  position: relative;
+  cursor: help;
+  font-weight: 500;
+  color: #555;
+  text-decoration: none;
+  border-bottom: 1px dotted;
+  transition: border-color 0.2s ease;
+}
+
+.tooltip-trigger:hover {
+  border-bottom-color: #236192;
+  color: #236192;
+}
+
+.info-icon {
+  font-style: normal;
+  font-size: 0.8em;
+  margin-left: 4px;
+  color: #999;
+}
+.tooltip-trigger:hover .info-icon {
+  color: #236192;
+}
+
+
+.tooltip-box {
+  position: absolute;
+  background: white;
+  color: black;
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 14px;
+  display: none;
+  z-index: 999;
+  max-width: 320px;
+  line-height: 1.5;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.tooltip-box a {
+  text-decoration: underline;
+}
+
 
 a:link {
     color: #236192;
@@ -67,13 +111,12 @@ button {
   box-sizing: border-box;
   color: #ffffff;
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   font-family: 'Barlow', sans-serif;
   font-size: 16px;
   font-weight: 600;
   justify-content: center;
   line-height: 20px;
-  max-width: 480px;
   min-height: 40px;
   min-width: 0px;
   overflow: hidden;
@@ -96,15 +139,13 @@ button[type="reset-button"] {
   box-sizing: border-box;
   color: #ffffff;
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   font-family: 'Barlow', sans-serif;
   font-size: 16px;
   font-weight: 600;
   justify-content: center;
   line-height: 20px;
-  max-width: 480px;
   min-height: 40px;
-  min-width: 0px;
   overflow: hidden;
   padding: 0px;
   padding-left: 20px;
@@ -114,7 +155,7 @@ button[type="reset-button"] {
   user-select: none;
   -webkit-user-select: none;
   vertical-align: middle;
-  width: 100%;
+  flex: 1;
 }
 
 .download-button {
@@ -155,7 +196,6 @@ label {
 .subtitle {
   font-size: 0.9em;
   color: #555;
-  margin-bottom: 0.3em;
 }
 
 .controls {

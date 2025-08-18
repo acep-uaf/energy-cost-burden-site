@@ -1,3 +1,54 @@
+// Adding dynamic tooltips (click-to-stick version)
+//// Tooltip content for each topic
+const tooltipData = {
+  efficiency: `<p>Efficiency refers to how well inputs are converted into outputs. For heating fuels, this is energy burden to useful heat energy.</p> <p>Source: <a href="https://www.fnsb.gov/ArchiveCenter/ViewFile/Item/380#page=49" target="_blank" rel="noopener noreferrer">Fairbanks North Star Borough, Department of Community Planning, Community Research
+Quarterly, Vol. XLVI, No. 3, 2023.</a>.</p>`,
+  market: `<p>Market share in this context indicates the share of households in the Borough that use this fuel as their primary source of heat.</p> <p>Source: <a href="https://dec.alaska.gov/media/7554/fbks-2013-15-hhsurvey.pdf" target="_blank" rel="noopener noreferrer">Carlson, T.; Zhang, W. Analysis of Fairbanks 2013-2015 Home Heating Surveys. Sierra Research. 2015, pp 1–39</a>.</p>`,
+  weightavg: `<p>The average of the energy burdens across all census tracts in the borough. Weighted by the number of occupied units in each tract.</p>`
+};
+
+//// Create one tooltip box
+const tooltip = document.createElement('div');
+tooltip.className = 'tooltip-box';
+document.body.appendChild(tooltip);
+
+let activeTooltipTarget = null;
+
+//// Handle click for all tooltip triggers
+document.querySelectorAll('.tooltip-trigger').forEach(el => {
+  el.addEventListener('click', e => {
+    e.stopPropagation(); // Prevent closing when clicking the trigger
+    const topic = el.dataset.topic;
+
+    // If already active, toggle off
+    if (activeTooltipTarget === el) {
+      tooltip.style.display = 'none';
+      activeTooltipTarget = null;
+      return;
+    }
+
+    // Set new content and show tooltip
+    tooltip.innerHTML = tooltipData[topic] || '';
+    tooltip.style.display = 'block';
+    activeTooltipTarget = el;
+
+    // Position below the clicked element
+    const rect = el.getBoundingClientRect();
+    tooltip.style.left = `${rect.left + window.scrollX}px`;
+    tooltip.style.top = `${rect.bottom + window.scrollY + 6}px`;
+  });
+});
+
+// Hide tooltip when clicking anywhere else
+document.addEventListener('click', e => {
+  if (!tooltip.contains(e.target)) {
+    tooltip.style.display = 'none';
+    activeTooltipTarget = null;
+  }
+});
+
+
+
 document.addEventListener("DOMContentLoaded", async () => {
     const censusTractCsvUrl = "/data/census-tract-input-vector.csv";
     const censusTractGeoJsonUrl = "/data/fnsb-tracts.geojson";
@@ -5,10 +56,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     let mapLayer;
   
     const defaultPrices = {
-      electricity: 0.25,
+      electricity: 0.25141,
       hfo: 4.40,
       cord_wood: 425,
-      natural_gas: 2.29,
+      natural_gas: 2.292,
       pellet: 350,
       coal: 143,
       district_heat: 19.59
@@ -57,6 +108,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       const legend = L.control({ position: 'bottomright' });
       legend.onAdd = function (map) {
         const div = L.DomUtil.create('div', 'info legend');
+        div.style.fontFamily = "'Barlow', sans-serif";
+        div.style.fontWeight = "bold";
         const grades = [0.00, 0.02, 0.04, 0.06, 0.08, 0.10, 0.12, 0.15];
   
         div.innerHTML += '<h4>Estimated Energy Burden</h4>';
@@ -91,10 +144,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       return L.geoJSON(data, {
         style: feature => ({
           color: "#333",
-          weight: 1.5,
+          weight: 3,
           dashArray: "4",
-          fillColor: nameColors[feature.properties.NAME] || "#cccccc",
-          fillOpacity: 0.5
+          fill: false
         }),
         onEachFeature: (feature, layer) => {
           if (feature.properties && feature.properties.NAME) {
@@ -110,6 +162,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const title = document.createElement('div');
         title.textContent = 'Additional Layers';
         title.style.fontWeight = 'bold';
+        title.style.fontFamily = 'Barlow';
         title.style.fontSize = '16px';
         title.style.padding = '4px 8px';
         title.style.background = '#fff';
@@ -138,6 +191,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         csvRows.push([
           "TractLong",
           "CensusTractName",
+          "MedianYearBuilt",
+          "MedianBuildingSqft",
       
           "AverageHouseholdElectricityMmbtu",
           "AverageHouseholdSpaceHeatingMmbtu",
@@ -161,6 +216,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           csvRows.push([
             row.TractLong,
             row.Description,
+            row.MedianYearBuilt,
+            row.MedianBuildingSqft,
       
             row.AverageHouseholdElectricityMmbtu != null ? row.AverageHouseholdElectricityMmbtu.toFixed(2) : "",
             row.AverageHouseholdSpaceHeatingMmbtu != null ? row.AverageHouseholdSpaceHeatingMmbtu.toFixed(2) : "",
@@ -215,6 +272,8 @@ document.addEventListener("DOMContentLoaded", async () => {
               properties: {
                 TractLong: row.TractLong,
                 CensusTractName: row.Description,
+                MedianYearBuilt: row.MedianYearBuilt,
+                MedianBuildingSqft: row.MedianBuildingSqft,
       
                 AverageHouseholdElectricityMmbtu: row.AverageHouseholdElectricityMmbtu,
                 AverageHouseholdSpaceHeatingMmbtu: row.AverageHouseholdSpaceHeatingMmbtu,
@@ -254,9 +313,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   
     function runCalculationAndRender() {
       const prices = getUserPrices();
-      const { result: dataWithResults } = processData(rawData, prices);
+      const { result: dataWithResults, weightedAverageEnergyBurden} = processData(rawData, prices);
   
-      updateSidebar(dataWithResults);
+      updateSidebar(dataWithResults, weightedAverageEnergyBurden);
       renderMapLayer(dataWithResults);
     }
   
@@ -298,7 +357,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   
     function popupContent(props) {
       const burden = props.EnergyBurden?.toFixed(2) + "%" || "N/A";
-      return `<strong>${props.Description}</strong><br>Energy Burden: ${burden}`;
+      return `<strong>${props.Description}</strong><br>
+      Energy Burden: ${burden}<br>
+      Median Household Income: $${Number(props.MedianHouseholdIncome).toLocaleString()}<br>
+      Median Year Built: ${props.MedianYearBuilt}<br>
+      Median Heated Area: ${props.MedianBuildingSqft} sqft`.trim();
     }
   
     function getUserPrices() {
@@ -331,6 +394,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     
       const HeatCostMmbtu = Object.values(fuels)
         .reduce((s, f) => s + pricePerMMBTU(f) * f.share, 0);
+
+      // -- Verifying the Output of HeatCostMmbtu --
+      /* Object.entries(fuels).forEach(([key, fuel]) => {
+        console.log(`Price for ${key}: $${fuel.price.toFixed(6)}`);
+      });
+
+
+      Object.entries(fuels).forEach(([key, fuel]) => {
+        const cost = pricePerMMBTU(fuel);
+        console.log(`Price per MMBtu (useful) for ${key}: $${cost.toFixed(6)}`);
+      });
+
+      console.log(`Price per MMBtu (useful) for electricity: $${safeMultiply(kWhFromBTU, prices.electricity).toFixed(6)}`); */
     
       const result = data.map(entry => {
         entry.AverageHouseholdElectricityMmbtu = safeDivide(entry.AnnualElectricityMmbtu, entry.OccupiedUnits);
@@ -343,11 +419,32 @@ document.addEventListener("DOMContentLoaded", async () => {
         entry.EnergyBurden = safeMultiply(safeDivide(entry.AnnualEnergyUseCostHh, entry.MedianHouseholdIncome), 100);
         return entry;
       });
-    
-      return { result };
+
+      // -- Calculating the Weighted Average Energy Burden --
+      let totalWeightedBurden = 0;
+      let totalWeight = 0;
+
+      result.forEach(entry => {
+        const weight = parseFloat(entry.OccupiedUnits);
+        const burden = parseFloat(entry.EnergyBurden);
+
+        if (!isNaN(weight) && weight > 0 && !isNaN(burden)) {
+          totalWeightedBurden = safeAdd(totalWeightedBurden, safeMultiply(weight, burden));
+          totalWeight = safeAdd(totalWeight, weight);
+        }
+      });
+
+      const weightedAverageEnergyBurden = safeDivide(totalWeightedBurden, totalWeight);
+
+      // -- Temporary Debugging --
+      /* console.log("TotalWeightedBurden:", totalWeightedBurden);
+      console.log("TotalWeight:", totalWeight);
+      console.log("WeightedAverageEnergyBurden:", weightedAverageEnergyBurden); */
+
+      return { result, weightedAverageEnergyBurden };
     }
   
-    function updateSidebar(data) {
+    function updateSidebar(data, weightedAverageEnergyBurden) {
       if (!Array.isArray(data) || data.length === 0) return;
   
       const parsedData = data.map(d => ({
@@ -365,21 +462,31 @@ document.addEventListener("DOMContentLoaded", async () => {
       const AnnualElectricityCost = parsedData.reduce((sum, d) => sum + (d.AnnualElectricityCost || 0), 0);
       const AnnualElectricityMmbtu = parsedData.reduce((sum, d) => sum + (d.AnnualElectricityMmbtu || 0), 0);
       const AverageElectricityCost = safeDivide(AnnualElectricityCost, AnnualElectricityMmbtu);
-  
+
       document.getElementById("WeightedAverageSpaceHeatingCost").textContent =
         WeightedAverageSpaceHeatingCost != null ? `$${WeightedAverageSpaceHeatingCost.toFixed(2)}` : "N/A";
   
       document.getElementById("AverageElectricityCost").textContent =
         AverageElectricityCost != null ? `$${AverageElectricityCost.toFixed(2)}` : "N/A";
+
+      document.getElementById("WeightedAverageEnergyBurden").textContent =
+        weightedAverageEnergyBurden != null ? `${weightedAverageEnergyBurden.toFixed(2)}%` : "N/A";
     }
   
     function initializeInputs() {
-      for (const key in defaultPrices) {
-        const r = document.getElementById(`${key}_price`);
-        const i = document.getElementById(`${key}_input`);
-        if (r) r.value = defaultPrices[key].toFixed(2);
-        if (i) i.value = defaultPrices[key].toFixed(2);
-      }
+        for (const key in defaultPrices) {
+          const r = document.getElementById(`${key}_price`);
+          const i = document.getElementById(`${key}_input`);
+
+          // For natural gas and electricity: show full precision
+          const fullPrecision = (key === "natural_gas" || key === "electricity");
+
+          const value = defaultPrices[key];
+          const formatted = fullPrecision ? value : value.toFixed(2);
+
+          if (r) r.value = formatted;
+          if (i) i.value = formatted;
+        }
     }
   
     function setupSync() {
@@ -389,12 +496,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!r || !i) continue;
   
         r.addEventListener("input", () => {
-          i.value = parseFloat(r.value).toFixed(2);
+          i.value = parseFloat(r.value);
           runCalculationAndRender();
         });
   
         i.addEventListener("input", () => {
-          r.value = parseFloat(i.value).toFixed(2);
+          r.value = parseFloat(i.value);
           runCalculationAndRender();
         });
       }
