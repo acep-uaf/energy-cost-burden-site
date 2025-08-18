@@ -13,7 +13,7 @@ public/
 *.dat
 
 # Isochrone building data dir
-r-scripts/data/
+isochrones/data/
 
 # Java dir
 rjavaenv/

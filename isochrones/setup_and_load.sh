@@ -13,3 +13,7 @@ osmium fileinfo data/alaska.osm.pbf
 osmium cat data/alaska.osm.pbf -o data/alaska.osm
 
 osm2pgrouting --f data/alaska.osm --conf data/mapconfig.xml --dbname routing_db --username ian --clean 
+
+ogr2ogr -f "PostgreSQL" PG:"dbname=routing_db user=ian" ../static/data/fnsb.geojson -nln fnsb
+ogr2ogr -f "PostgreSQL" PG:"dbname=routing_db user=ian" ../static/data/fnsb-tracts.geojson -nln fnsb_tracts
+ogr2ogr -f "PostgreSQL" PG:"dbname=routing_db user=ian" data/bbox.geojson -nln bbox
