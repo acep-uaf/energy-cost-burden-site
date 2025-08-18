@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS public.eielson_summer;
-CREATE TABLE public.eielson_summer AS
+DROP TABLE IF EXISTS public.isochrone_eielson_summer;
+CREATE TABLE public.isochrone_eielson_summer AS
 WITH
 
     start_node_eielson AS (
@@ -33,8 +33,8 @@ WITH
 SELECT * FROM hull;
 
 
-DROP TABLE IF EXISTS public.wainwright_summer;
-CREATE TABLE public.wainwright_summer AS
+DROP TABLE IF EXISTS public.isochrone_wainwright_summer;
+CREATE TABLE public.isochrone_wainwright_summer AS
 WITH
 
     start_node_wainwright AS (

@@ -12,8 +12,8 @@ wget -P data -O data/alaska.osm.pbf https://download.geofabrik.de/north-america/
 osmium fileinfo data/alaska.osm.pbf
 osmium cat data/alaska.osm.pbf -o data/alaska.osm
 
-osm2pgrouting --f data/alaska.osm --conf data/mapconfig.xml --dbname routing_db --username ian --clean 
+osm2pgrouting --f data/alaska.osm --conf data/mapconfig.xml --dbname routing_db --username dev --clean 
 
-ogr2ogr -f "PostgreSQL" PG:"dbname=routing_db user=ian" ../static/data/fnsb.geojson -nln fnsb
-ogr2ogr -f "PostgreSQL" PG:"dbname=routing_db user=ian" ../static/data/fnsb-tracts.geojson -nln fnsb_tracts
-ogr2ogr -f "PostgreSQL" PG:"dbname=routing_db user=ian" data/bbox.geojson -nln bbox
+ogr2ogr -f "PostgreSQL" PG:"dbname=routing_db user=dev" ../static/data/fnsb.geojson -nln fnsb
+ogr2ogr -f "PostgreSQL" PG:"dbname=routing_db user=dev" ../static/data/fnsb-tracts.geojson -nln fnsb_tracts
+ogr2ogr -f "PostgreSQL" PG:"dbname=routing_db user=dev" data/bbox.geojson -nln bbox
