@@ -50,8 +50,8 @@ document.addEventListener('click', e => {
 
 
 document.addEventListener("DOMContentLoaded", async () => {
-    const censusTractCsvUrl = "data/census-tract-input-vector.csv";
-    const censusTractGeoJsonUrl = "data/census-estimates.geojson";
+    const censusTractCsvUrl = "/data/census-tract-input-vector.csv";
+    const censusTractGeoJsonUrl = "/data/census-estimates.geojson";
     let rawData = [];
     let mapLayer;
   
@@ -127,12 +127,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   
     async function loadOverlays() {
-      const citiesData = await fetch('data/cities.geojson').then(res => res.json());
+      const citiesData = await fetch('/data/cities.geojson').then(res => res.json());
       const citiesLayer = createGeoJsonOverlay(citiesData);
       overlays["Cities"] = citiesLayer;
       layerControl.addOverlay(citiesLayer, "Cities");
   
-      const militaryData = await fetch('data/military-boundaries.geojson').then(res => res.json());
+      const militaryData = await fetch('/data/military-boundaries.geojson').then(res => res.json());
       const militaryLayer = createGeoJsonOverlay(militaryData);
       overlays["Military Boundaries"] = militaryLayer;
       layerControl.addOverlay(militaryLayer, "Military Boundaries");
