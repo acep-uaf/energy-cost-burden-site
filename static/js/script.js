@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       overlays["Cities"] = citiesLayer;
       layerControl.addOverlay(citiesLayer, "Cities");
   
-      const militaryData = await fetch('data/military-boundaries.geojson').then(res => res.json());
+      const militaryData = await fetch('/data/military-boundaries.geojson').then(res => res.json());
       const militaryLayer = createGeoJsonOverlay(militaryData);
       overlays["Military Boundaries"] = militaryLayer;
       layerControl.addOverlay(militaryLayer, "Military Boundaries");
