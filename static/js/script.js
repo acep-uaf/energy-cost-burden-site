@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         
-      document.getElementById("download-csv").addEventListener("click", (e) => {
+      document.getElementById("download-csv").addEventListener("click", async (e) => {
         const prices = getUserPrices();
         const { result: dataWithResults } = processData(rawData, prices);
       
@@ -238,19 +238,34 @@ document.addEventListener("DOMContentLoaded", async () => {
           ]);
         }
       
-        const csvContent = csvRows.map(r => r.join(",")).join("\n");
-        const blob = new Blob([csvContent], { type: "text/csv" });
-        const url = URL.createObjectURL(blob);
+        const zip = new JSZip();
+
+        // compile dynamically-generated CSV
+        const csvData = csvRows.map(r => r.join(",")).join("\n");
+        zip.file("fairbanksEnergyBurden.csv", csvData)
+
+        // pull static CSV
+        const dataDictionaryResponse = await fetch("data/fairbanksEnergyBurdenDataDictionary.csv");
+        if (!dataDictionaryResponse.ok) throw new Error("Failed to fetch data dictionary");
+        const dataDictionaryCsv = await dataDictionaryResponse.text();
+        zip.file("fairbanksEnergyBurdenDataDictionary.csv", dataDictionaryCsv);
+
+        // pull static CSV
+        const readMeResponse = await fetch("data/zipReadme.txt");
+        if (!readMeResponse.ok) throw new Error("Failed to fetch data/README");
+        const readmeTxt = await readMeResponse.text();
+        zip.file("README.txt", readmeTxt);
+
+        // zip it all together
+        const blob = await zip.generateAsync({ type: "blob" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "fairbanksEnergyBurden.zip";
+        link.click();
       
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "fairbanksEnergyBurden.csv";
-        a.click();
-      
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
       });
 
-      document.getElementById("download-geojson").addEventListener("click", () => {
+      document.getElementById("download-geojson").addEventListener("click", async (e) => {
         const prices = getUserPrices();
         const { result: dataWithResults } = processData(rawData, prices);
       
@@ -296,17 +311,40 @@ document.addEventListener("DOMContentLoaded", async () => {
             };
           })
         };
-      
-        // Download the GeoJSON
-        const blob = new Blob([JSON.stringify(geojson, null, 2)], { type: "application/geo+json" });
-        const url = URL.createObjectURL(blob);
-      
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "fairbanksEnergyBurden.geojson";
-        a.click();
-      
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+        const zip = JSZip();
+
+        // compile dynamically-generated geojson
+        const jsonData = JSON.stringify(geojson, null, 2)
+        zip.file("fairbanksEnergyBurden.geojson", jsonData)
+
+        // pull static CSV
+        const dataDictionaryResponse = await fetch("data/fairbanksEnergyBurdenDataDictionary.csv");
+        if (!dataDictionaryResponse.ok) throw new Error("Failed to fetch data dictionary");
+        const dataDictionaryCsv = await dataDictionaryResponse.text();
+        zip.file("fairbanksEnergyBurdenDataDictionary.csv", dataDictionaryCsv);
+
+        // pull static CSV
+        const readMeResponse = await fetch("data/zipReadme.txt");
+        if (!readMeResponse.ok) throw new Error("Failed to fetch data/README");
+        const readmeTxt = await readMeResponse.text();
+        zip.file("README.txt", readmeTxt);
+
+        // zip it all together
+        const blob = await zip.generateAsync({ type: "blob" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "fairbanksEnergyBurden.zip";
+        link.click();
+
+        // // Download the GeoJSON
+        // const blob = new Blob([JSON.stringify(geojson, null, 2)], { type: "application/geo+json" });
+        // const url = URL.createObjectURL(blob);
+        // const a = document.createElement("a");
+        // a.href = url;
+        // a.download = "fairbanksEnergyBurden.geojson";
+        // a.click();
+        // setTimeout(() => URL.revokeObjectURL(url), 1000);
       });
 
     }
