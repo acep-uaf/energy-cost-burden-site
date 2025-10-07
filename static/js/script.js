@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         
-      document.getElementById("download-csv").addEventListener("click", (e) => {
+      document.getElementById("download-csv").addEventListener("click", async (e) => {
         const prices = getUserPrices();
         const { result: dataWithResults } = processData(rawData, prices);
       
@@ -238,16 +238,31 @@ document.addEventListener("DOMContentLoaded", async () => {
           ]);
         }
       
+        const zip = new JSZip();
+
+        // compile dynamically-generated CSV
         const csvContent = csvRows.map(r => r.join(",")).join("\n");
-        const blob = new Blob([csvContent], { type: "text/csv" });
-        const url = URL.createObjectURL(blob);
+        zip.file("fairbanksEnergyBurden.csv", csvContent)
+
+        // pull static CSV
+        const dataDictionaryResponse = await fetch("data/fairbanksEnergyBurdenDataDictionary.csv");
+        if (!dataDictionaryResponse.ok) throw new Error("Failed to fetch data dictionary");
+        const dataDictionaryCsv = await dataDictionaryResponse.text();
+        zip.file("fairbanksEnergyBurdenDataDictionary.csv", dataDictionaryCsv);
+
+        // pull static CSV
+        const readMeResponse = await fetch("data/README.txt");
+        if (!readMeResponse.ok) throw new Error("Failed to fetch data/README");
+        const readmeCsv = await readMeResponse.text();
+        zip.file("README.txt", readmeCsv);
+
+        // zip it all together
+        const blob = await zip.generateAsync({ type: "blob" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "fairbanksEnergyBurden.zip";
+        link.click();
       
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "fairbanksEnergyBurden.csv";
-        a.click();
-      
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
       });
 
       document.getElementById("download-geojson").addEventListener("click", () => {
