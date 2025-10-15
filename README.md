@@ -1,6 +1,4 @@
-<img src="static/images/acep-logo-dark.png" width="40%" style="margin-right: 20%"> 
-
-<img src="static/images/uaf-logo.png" width="25%">
+<img src="static/images/acep-logo-dark.png" width="40%" style="margin-right: 10%"> <img src="static/images/uaf-logo.png" width="25%">
 
 # FNSB Energy Burden Estimator
 
