@@ -1,12 +1,10 @@
-<img src="static/images/acep-logo-dark.png" width="40%" style="margin-right: 30%"> 
+<img src="static/images/acep-logo-dark.png" width="40%" style="margin-right: 20%"> 
 
 <img src="static/images/uaf-logo.png" width="25%">
 
 # FNSB Energy Burden Estimator
 
 <br>
-
-### Overview
 
 This repository contains code and data to build a static website used for estimating the average annual household energy costs as a share of total household income in the Fairbanks North Star Borough based on energy prices and census data. This website serves as a extension of the 2024 Borough commissioned report: [Energy Burden Analysis of the Fairbanks North Star Borough](https://zenodo.org/records/12575186). 
 
