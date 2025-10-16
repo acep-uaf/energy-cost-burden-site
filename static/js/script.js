@@ -597,10 +597,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const year = data['date-released']
       ? new Date(data['date-released']).getFullYear()
       : 'n.d.';
-    const publisher = data.publisher || 'Alaska Center for Energy and Power';
-    const url = data.url || '#';
+    const publisher = data.publisher || '';
+    const doi = data.doi || '#';
 
-    citationDiv.innerHTML = `${authors} (${year}). <i>${title}</i>${version}. ${publisher}. <a href="${url}">${url}</a>`;
+    citationDiv.innerHTML = `${authors} (${year}). <i>${title}</i>${version}. ${publisher}. <a href="${doi}">${doi}</a>`;
   } catch (error) {
     console.error('Citation load error:', error);
     citationDiv.textContent = 'Citation unavailable.';
