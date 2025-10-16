@@ -578,5 +578,35 @@ document.addEventListener("DOMContentLoaded", async () => {
              d > 2  ? '#FED976' :
                       '#FFEDA0';
     }
+
+
+  const citationDiv = document.getElementById('citation');
+  const citationUrl = "data/CITATION.cff";
+
+  try {
+    const response = await fetch(citationUrl);
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+    const cffText = await response.text();
+    const data = jsyaml.load(cffText);
+
+    const authors = data.authors
+      .map(a => `${a['family-names']}, ${a['given-names'].charAt(0)}.`)
+      .join(' & ');
+    const title = data.title || 'Untitled';
+    const version = data.version ? ` (v${data.version})` : '';
+    const year = data['date-released']
+      ? new Date(data['date-released']).getFullYear()
+      : 'n.d.';
+    const publisher = data.publisher || 'Alaska Center for Energy and Power';
+    const url = data.url || '#';
+
+    citationDiv.innerHTML = `${authors} (${year}). <i>${title}</i>${version}. ${publisher}. <a href="${url}">${url}</a>`;
+  } catch (error) {
+    console.error('Citation load error:', error);
+    citationDiv.textContent = 'Citation unavailable.';
+  }
+
+
+
   });
   
