@@ -12,6 +12,9 @@ Details of the methodology used to calculate energy burden can be found in the [
 ### Running the site locally
 In order to develop and run locally, install Hugo on your machine by following [this link](https://gohugo.io/installation/). Once you have Hugo installed, clone the repo, nagivate to the root directory, and run `hugo serve` to start the server. Navigate to the link provided in the terminal output (ex: `http://localhost:1313/`) to see the website. 
 
+### Citation
+To cite this work, please see the [citation file](static/data/CITATION.cff) or view the formatted version on the [web page](https://fnsb-energy-burden.acep.uaf.edu/#citation)
+
 ### Contact
 If you have questions regarding this tool, please reach out via email to ACEP.info@alaska.edu.
 
